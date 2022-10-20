@@ -1,10 +1,10 @@
 import express, { Application, Request, Response } from 'express';
-import bodyParser from 'body-parser';
-import mysql from 'mysql2';
 import * as dotenv from "dotenv";
-/* import { createMission, findAllMissions } from './models/mission'; */
 import { DataSource } from 'typeorm';
 import { User } from "./models/user.model"
+import { Mission } from "./models/mission.model"
+
+
 require("dotenv").config({ path: ".env" })
 dotenv.config({ path: "./.env" });
 
@@ -31,6 +31,8 @@ dataSource
     console.error("Error during Data Source initialization:", err)
   });
 
+
+// Methods for Users
 app.get("/users", async function (req: Request, res: Response) {
   const users = await dataSource.getRepository(User).find();
   res.json(users);
@@ -40,42 +42,22 @@ app.post("/users", async function (req: Request, res: Response) {
   const results = await dataSource.getRepository(User).save(user)
   return res.send(results)
 })
+
+
+//Methods for Missions
+app.get("/missions", async function (req: Request, res: Response) {
+  const missions = await dataSource.getRepository(Mission).find();
+  res.json(missions);
+});
+app.post("/mission", async function (req: Request, res: Response) {
+  const mission = await dataSource.getRepository(Mission).create(req.body)
+  const results = await dataSource.getRepository(Mission).save(mission)
+  return res.send(results)
+})
+
+
 const PORT = process.env.APP_PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
 });
 
-/* export const db = mysql.createConnection({
-  host: process.env.MY_SQL_DB_HOST,
-  user: process.env.MY_SQL_DB_USER,
-  password: process.env.MY_SQL_DB_PASSWORD,
-  database: process.env.MY_SQL_DB_DATABASE,
-  
-});
-
-export default db;
-
-const app: Application = express();
-
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-app.post('/create', (req: Request, res: Response) => {
-  createMission
-})
-
-app.get('/allMissions', (req: Request, res: Response) => {
-  findAllMissions
-  
-  res.send(req.body)
-  
-})
-
-
-
-const PORT = process.env.PORT || 8000;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on PORT ${PORT}`)
-}) */
