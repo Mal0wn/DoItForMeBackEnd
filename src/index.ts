@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import mysql from 'mysql2';
 import * as dotenv from "dotenv";
+import { createMission, findAllMissions } from './models/mission';
 dotenv.config();
 
 export const db = mysql.createConnection({
@@ -19,10 +20,19 @@ const app: Application = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', (req: Request, res: Response) => {
-
-  res.send('Hello Mother Fuckers ! ')
+app.post('/create', (req: Request, res: Response) => {
+  createMission
+  
 })
+
+app.get('/allMissions', (req: Request, res: Response) => {
+  findAllMissions
+  
+  res.send(req.body)
+  
+})
+
+
 
 const PORT = process.env.PORT || 8000;
 
