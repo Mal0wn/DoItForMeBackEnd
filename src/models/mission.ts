@@ -1,4 +1,4 @@
-import Missions from '../types/mission';
+/* import Missions from '../types/mission';
 import db from '../index'; 
 import { OkPacket, RowDataPacket } from "mysql2";
 
@@ -43,3 +43,4 @@ const maDate: Date = new Date();
   });
 }
 
+ */
