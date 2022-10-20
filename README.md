@@ -5,7 +5,10 @@ Node.JS v 17.4.0
 TypeORM
 
 ## Installation
-
+clone 
+npm i 
+npm run dev 
+open to http://localhost:8000/
 
 
 ## MCD 
