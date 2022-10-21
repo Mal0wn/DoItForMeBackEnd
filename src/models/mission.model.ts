@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, JoinColumn } from "typeorm"
+import { User } from "./user.model";
 
 @Entity()
 export class Mission {
@@ -20,7 +21,7 @@ export class Mission {
 	@Column({ length: 250 })
     description: string;
 
-	@Column()
+	@CreateDateColumn()
     creation_date: Date;
 
 	@Column()
@@ -28,4 +29,12 @@ export class Mission {
 
 	@Column()
     id_make: number;
+
+    @ManyToOne(() => User, (user) => user.missionCreated)
+    @JoinColumn({ name: "id_create" })
+    creator: User;
+
+    @ManyToOne(() => User, (user) => user.missionMade)
+    @JoinColumn({ name: "id_make" })
+    maker: User;
 }
