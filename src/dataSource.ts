@@ -1,6 +1,10 @@
 import { DataSource } from "typeorm";
+import * as dotenv from "dotenv";
 
-const dataSource = new DataSource({
+require("dotenv").config({ path: ".env" })
+dotenv.config({ path: "./.env" });
+
+export const dataSource = new DataSource({
     type: "mysql",
     host: process.env.HOST ?? "localhost",
     port: parseInt(process.env.DB_PORT ?? "3306"),
@@ -11,14 +15,3 @@ const dataSource = new DataSource({
     logging: true,
     synchronize: true
   });
-
-dataSource.initialize()
-  .then(() => {
-    console.log("Data Source has been initialized!")
-  })
-  .catch((err: any) => {
-    console.error("Error during Data Source initialization:", err)
-  });
-
-
-module.exports = dataSource;

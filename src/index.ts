@@ -1,18 +1,20 @@
 import express, { Application, Request, Response } from 'express';
-import * as dotenv from "dotenv";
-import { User } from "./models/user.model"
-import { Mission } from "./models/mission.model"
-const dataSource = require("./dataSource")
+import { dataSource } from "./dataSource";
 const indexRouter = require("./routes/index.route");
 
-
-require("dotenv").config({ path: ".env" })
-dotenv.config({ path: "./.env" });
+dataSource.initialize()
+  .then(() => {
+    console.log("Data Source has been initialized!")
+  })
+  .catch((err: any) => {
+    console.error("Error during Data Source initialization:", err)
+  });
 
 const app: Application = express();
 app.use(express.json());
+app.use(indexRouter);
 
-  /* 
+/* 
 // Methods for Users
 app.get("/users", async function (req: Request, res: Response) {
   const users = await dataSource.getRepository(User).find();

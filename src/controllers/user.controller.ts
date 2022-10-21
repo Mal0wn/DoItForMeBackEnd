@@ -19,6 +19,7 @@ const userController = {
             res.json(users);
             return;
         } catch (error) {
+            console.log('in error');
             next(error);
             return;
         }

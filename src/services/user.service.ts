@@ -17,7 +17,7 @@ const userService = {
                 lastname: lastName
             }
         });
-        if( users === null){
+        if( users.length === 0){
             throw new Api404Error(`User with firstName: ${firstName} and lastName: ${lastName} not found.`);
         }
         return users;
@@ -57,8 +57,7 @@ const userService = {
         });
     },
     create: async (user: User) => {
-        console.log(user);
-        return UserRepository.create(user).id;// return only id
+        return UserRepository.save(user);// return only id
     }
 }
 

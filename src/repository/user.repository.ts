@@ -1,4 +1,4 @@
-const dataSource = require("../dataSource");
+import { dataSource } from "../dataSource";
 import { User } from "../models/user.model";
 
 //https://typeorm.io/select-query-builder
