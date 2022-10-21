@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm"
+import { Mission } from "./mission.model";
 
 @Entity()
 export class User {
@@ -28,4 +29,10 @@ export class User {
 
     @Column()
     phone: number;
+
+    @OneToMany(() => Mission, (mission) => mission.creator)
+    missionCreated: Mission[];
+
+    @OneToMany(() => Mission, (mission) => mission.maker)
+    missionMade: Mission[];
 }
