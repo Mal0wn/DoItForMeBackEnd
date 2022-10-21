@@ -1,18 +1,15 @@
-import { userService } from "../services/user.service";
+const userService = require("../services/user.service");
 import { Request, Response, NextFunction } from 'express';
 
 
-export const userController = {
+const userController = {
     getAll: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const users = await userService.findAll();
-            throw new Api404Error(`User with id: ${req.params.id} not found.`)
             res.json(users);
             return;
         } catch (error) {
-            // c'est ici qu'on peut assigner differents code http ( genre 400 bad request ou 500 internal error)
-            console.log(error);
-            res.status(500);
+            next(error);
             return;
         }
     },
@@ -22,10 +19,31 @@ export const userController = {
             res.json(users);
             return;
         } catch (error) {
-            // c'est ici qu'on peut assigner differents code http ( genre 400 bad request ou 500 internal error)
+            next(error);
+            return;
+        }
+    },
+    create: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userID = await userService.create(req.body);
+            console.log(userID);
+            res.json(userID);
+            return;
+        } catch (error) {
             console.log(error);
-            res.status(500);
+            next(error);
+            return;
+        }
+    },
+    id: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const users = await userService.findByIdWithMissionCreated(req.params.id);
+            res.json(users);
+            return;
+        } catch (error) {
+            next(error);
             return;
         }
     }
 }
+module.exports = userController;

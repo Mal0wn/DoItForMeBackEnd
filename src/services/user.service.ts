@@ -1,15 +1,26 @@
+import { Api400Error, Api404Error } from "../errors/api.error";
+import { User } from "../models/user.model";
 import { UserRepository } from "../repository/user.repository";
 
 // https://typeorm.io/find-options
-export const userService = {
+const userService = {
 
     findAllByFullName: async (firstName: string, lastName: string) => {
-        return await UserRepository.find({
+        if (firstName === ""){
+            throw new Api400Error(`firstName empty.`);
+        }else if(lastName === ""){
+            throw new Api400Error(`lastName empty.`);
+        }
+        const users = await UserRepository.find({
             where: {
                 firstname: firstName,
                 lastname: lastName
             }
         });
+        if( users === null){
+            throw new Api404Error(`User with firstName: ${firstName} and lastName: ${lastName} not found.`);
+        }
+        return users;
     },
 
     findAllByFullName2: async (firstname: string, lastname: string) => {
@@ -20,10 +31,11 @@ export const userService = {
         return UserRepository.find();
     },
 
-    findByIdWithMissionCreated: async (userID: number) => {
+    findByIdWithMissionCreated: async (userID: string) => {
+        const id = parseInt(userID);
         return UserRepository.find({
             where: {
-                id: userID
+                id: id
             },
             relations: {
                 missionCreated: true
@@ -31,10 +43,11 @@ export const userService = {
         });
     },
 
-    findByIdWithMissionMadeTitle: async (userID: number) => {
+    findByIdWithMissionMadeTitle: async (userID: string) => {
+        const id = parseInt(userID);
         return UserRepository.find({
             where: {
-                id: userID
+                id: id
             },
             relations: {
                 missionMade: {
@@ -42,5 +55,11 @@ export const userService = {
                 }
             }
         });
+    },
+    create: async (user: User) => {
+        console.log(user);
+        return UserRepository.create(user).id;// return only id
     }
 }
+
+module.exports = userService;
