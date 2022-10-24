@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, JoinColumn } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, JoinColumn, OneToOne } from "typeorm"
+import { Address } from "./address.model";
 import { User } from "./user.model";
 
 @Entity()
@@ -37,4 +38,7 @@ export class Mission {
     @ManyToOne(() => User, (user) => user.missionMade)
     @JoinColumn({ name: "id_make" })
     maker: User;
+
+    @OneToOne(() => Address, (address) => address.mission)
+    address: Address;
 }

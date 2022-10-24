@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm"
+import { Address } from "./address.model";
 import { Mission } from "./mission.model";
 
 @Entity()
@@ -35,4 +36,7 @@ export class User {
 
     @OneToMany(() => Mission, (mission) => mission.maker)
     missionMade: Mission[];
+
+    @OneToMany(() => Address, (address) => address.user)
+    address: Address[];
 }
