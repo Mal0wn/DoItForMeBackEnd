@@ -12,7 +12,7 @@ open to http://localhost:8000/
 
 
 ## MCD 
-![mcd1](./assets/MCD1.png)
-![mcd2](./assets/MCD2.png)
-## Diagramme 
-![diagramme](./assets/diagrammeRN.png)
+![mcd1](./assets/MCD_P3_V1.png)
+
+## MLD 
+![mld1](./assets/MLD_P3_V1.png)
