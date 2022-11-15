@@ -9,6 +9,7 @@ const missionController = {
 			res.json(missions);
 			return;
 		} catch (error) {
+			console.log(error);
 			next(error);
 			return;
 		}
@@ -32,6 +33,7 @@ const missionController = {
 		const missions = await missionService.findById(req.params.id)
 res.json(missions)
 		} catch(error) {
+			console.log(error);
 			next(error);
 			return;
 		}
