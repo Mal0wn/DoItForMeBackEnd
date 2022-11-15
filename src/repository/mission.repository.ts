@@ -7,11 +7,11 @@ export const MissionRepository = dataSource.getRepository(Mission).extend({
 			.where("mission.title = :title", {title})
 			.getMany();
 	},
-	/*
+	
 	findById(id : number): Promise<Mission> {
 		return this.createQueryBuilder("mission")
 		.where("mission.id = :id", { id })
 		.getOneOrFail()
-	}*/
+	}
 });
 

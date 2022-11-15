@@ -26,8 +26,8 @@ const missionController = {
             return;
         }
     },
-	/*
-	getById: async(req: Request, res: Response, next: NextFunction) => { 
+	
+	id: async(req: Request, res: Response, next: NextFunction) => { 
 		try {
 		const missions = await missionService.findById(req.params.id)
 res.json(missions)
@@ -36,6 +36,6 @@ res.json(missions)
 			return;
 		}
 
-	}*/
+	},
 }
 module.exports = missionController;
