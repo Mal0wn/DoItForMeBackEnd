@@ -4,7 +4,7 @@ import { MissionRepository } from "../repository/mission.repository";
 
 const missionService = {
 
-	findAll: async () => {
+	findAllByTitle: async () => {
 		return MissionRepository.find()
 	},
 
