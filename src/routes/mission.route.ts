@@ -5,7 +5,7 @@ const missionRouter = express.Router();
 missionRouter
 .route("/")
 .get(missionController.getAll)
-//.post(missionController.create);
+.post(missionController.create);
 
 
 module.exports = missionRouter;

@@ -13,7 +13,20 @@ const missionController = {
 			return;
 		}
 
-	},/*
+	},
+	create: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const missionID = await missionService.create(req.body);
+            console.log(missionID);
+            res.json(missionID);
+            return;
+        } catch (error) {
+            console.log(error);
+            next(error);
+            return;
+        }
+    },
+	/*
 	getById: async(req: Request, res: Response, next: NextFunction) => { 
 		try {
 		const missions = await missionService.findById(req.params.id)
