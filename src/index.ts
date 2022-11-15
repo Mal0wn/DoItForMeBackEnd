@@ -2,6 +2,9 @@ import express, { Application, Request, Response } from 'express';
 import { dataSource } from "./dataSource";
 const indexRouter = require("./routes/index.route");
 
+import { User } from "./models/user.model"
+import { Mission } from "./models/mission.model"
+
 dataSource.initialize()
   .then(() => {
     console.log("Data Source has been initialized!")
@@ -14,7 +17,8 @@ const app: Application = express();
 app.use(express.json());
 app.use(indexRouter);
 
-/* 
+
+
 // Methods for Users
 app.get("/users", async function (req: Request, res: Response) {
   const users = await dataSource.getRepository(User).find();
@@ -37,7 +41,7 @@ app.post("/mission", async function (req: Request, res: Response) {
   const results = await dataSource.getRepository(Mission).save(mission)
   return res.send(results)
 })
- */
+ 
 
 const PORT = process.env.APP_PORT || 8000;
 app.listen(PORT, () => {
