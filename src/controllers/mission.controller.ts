@@ -1,7 +1,7 @@
 const missionService = require("../services/mission.service");
 import { Request, Response , NextFunction } from "express";
 
-const missionController = {
+const MissionController = {
 
 	getAll: async (req: Request, res: Response, next: NextFunction) => { 
 		try {
@@ -40,4 +40,4 @@ res.json(missions)
 
 	},
 }
-module.exports = missionController;
+module.exports = MissionController;
