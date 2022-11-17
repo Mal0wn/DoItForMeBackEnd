@@ -1,43 +1,121 @@
-const missionService = require("../services/mission.service");
-import { Request, Response , NextFunction } from "express";
+import 'reflect-metadata';
+import { injectable, inject } from 'inversify';
+import {
+    interfaces,
+    controller,
+    httpGet,
+	httpPost,
+    requestParam,
+} from 'inversify-express-utils';
+import {
+    ApiPath,
+    SwaggerDefinitionConstant,
+    ApiOperationGet,
+	ApiOperationPost
+} from 'swagger-express-ts';
+import * as express from 'express';
+import { MissionService } from "../services/mission.service";
+import { Mission } from '../models/mission.model';
 
-const MissionController = {
+@ApiPath({
+    name: 'Missions',
+    path: '/mission',
+    security: { apiKeyHeader: [] },
+})
 
-	getAll: async (req: Request, res: Response, next: NextFunction) => { 
-		try {
-			const missions = await missionService.findAllByTitle(req.params.title);
-			res.json(missions);
-			return;
-		} catch (error) {
-			console.log(error);
-			next(error);
-			return;
-		}
+@controller('/mission')
+@injectable()
 
-	},
-	create: async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const missionID = await missionService.create(req.body);
-            console.log(missionID);
-            res.json(missionID);
-            return;
-        } catch (error) {
-            console.log(error);
-            next(error);
-            return;
+
+export class MissionController implements interfaces.Controller {
+    constructor(@inject(MissionService.name) private MissionService: MissionService) {}
+	// Get All Missions 
+    @ApiOperationGet({
+        description: 'Get missions objects list',
+        responses: {
+            200: {
+                model: 'Mission',
+                type: SwaggerDefinitionConstant.Response.Type.ARRAY,
+            },
+        },
+        security: {
+            apiKeyHeader: [],
+        },
+        summary: 'Get Missions list',
+    })
+
+    @httpGet('/')
+    public getMissions(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction
+    ): void {
+        response.json(this.MissionService.getMissions());
+    }
+
+	// Post a mission
+    @ApiOperationPost({
+        description: 'Post mission object',
+        parameters: {
+            body: {
+                description: 'New mission',
+                model: 'mission',
+                required: true,
+            },
+        },
+        responses: {
+            200: {
+                model: 'Mission',
+            },
+            400: { description: 'Parameters fail' },
+        },
+        summary: 'Post new mission',
+    })
+
+    @httpPost('/')
+    public postMission(
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction
+    ): void {
+        if (!request.body) {
+           response.status(400).end();
         }
-    },
-	
-	id: async(req: Request, res: Response, next: NextFunction) => { 
-		try {
-		const missions = await missionService.findById(req.params.id)
-res.json(missions)
-		} catch(error) {
-			console.log(error);
-			next(error);
-			return;
-		}
+        const newMission = new Mission();
+        newMission.id = request.body.id;
+        newMission.title = request.body.title;
+        newMission.description = request.body.description;
+        this.MissionService.createMission(request.body);
+        response.json(request.body);
+    }
 
-	},
+	// Get One Mission 
+	@ApiOperationGet({
+        description: 'Get one mission object',
+        parameters: {
+            path: {
+                id: {
+                    required: true,
+                    type: SwaggerDefinitionConstant.Parameter.Type.STRING,
+                },
+            },
+        },
+        responses: {
+            200: {
+                model: 'Mission',
+            },
+            400: {description: 'Parameters fail'},
+        },
+    })
+    @httpGet('/')
+    public getMissionById(
+        @requestParam('id') id: string,
+        request: express.Request,
+        response: express.Response,
+        next: express.NextFunction
+    ): void {
+        response.json(this.MissionService.findById(id));
+    }
+
+
 }
-module.exports = MissionController;
