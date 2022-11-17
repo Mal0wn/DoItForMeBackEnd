@@ -31,7 +31,7 @@ export class MissionController implements interfaces.Controller {
     constructor(@inject(MissionService.name) private MissionService: MissionService) {}
 	// Get All Missions 
     @ApiOperationGet({
-        description: 'Get missions objects list',
+        description: 'Find all Missions',
         responses: {
             200: {
                 model: 'Mission',
@@ -55,7 +55,7 @@ export class MissionController implements interfaces.Controller {
 
 	// Post a mission
     @ApiOperationPost({
-        description: 'Post mission object',
+        description: 'Add a new mission',
         parameters: {
             body: {
                 description: 'New mission',
@@ -82,7 +82,6 @@ export class MissionController implements interfaces.Controller {
            response.status(400).end();
         }
         const newMission = new Mission();
-        newMission.id = request.body.id;
         newMission.title = request.body.title;
         newMission.description = request.body.description;
         this.MissionService.createMission(request.body);
@@ -91,7 +90,7 @@ export class MissionController implements interfaces.Controller {
 
 	// Get One Mission 
 	@ApiOperationGet({
-        description: 'Get one mission object',
+        description: 'Find mission with the id',
         parameters: {
             path: {
                 id: {

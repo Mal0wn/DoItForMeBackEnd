@@ -77,17 +77,28 @@ export class Mission {
 	@Column()
     id_make: number;
 
+    @ApiModelProperty({
+        description: 'Creator ',
+        example: ['123456789', '12345'],
+        required: false,
+    })
     @ManyToOne(() => User, (user) => user.missionCreated)
     @JoinColumn({ name: "id_create" })
     creator: User;
 
+    @ApiModelProperty({
+        description: 'Maker',
+        example: ['123456789', '12345'],
+        required: false,
+    })
     @ManyToOne(() => User, (user) => user.missionMade)
     @JoinColumn({ name: "id_make" })
     maker: User;
 
+
     @ApiModelProperty({
         description: 'adress of mission',
-        example: ['123456789', '12345'],
+        example: ['23 rue de Paris 59000 Lille'],
         required: false,
     })
     @OneToOne(() => Address, (address) => address.mission)
