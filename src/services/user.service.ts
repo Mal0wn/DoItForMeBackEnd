@@ -1,11 +1,64 @@
 import { Api400Error, Api404Error } from "../errors/api.error";
 import { User } from "../models/user.model";
 import { UserRepository } from "../repository/user.repository";
+import 'reflect-metadata';
+import { injectable } from 'inversify';
+import * as _ from 'lodash';
 
 // https://typeorm.io/find-options
-const userService = {
 
-    findAllByFullName: async (firstName: string, lastName: string) => {
+@injectable()
+export class UserService {
+
+	private userList : User[]
+
+	public async getUsers(): Promise<User[]> {
+		
+		this.userList = await UserRepository.find()
+		return this.userList
+		
+	}
+
+	public async findById(id: any){
+        
+        return UserRepository.find({
+            where: {
+                id: id 
+            }
+        });
+    }
+
+	public createUser(user: User){
+		return UserRepository.create(user);
+	}
+
+   public async findByIdWithMissionCreated(id: any){
+        return UserRepository.find({
+            where: {
+                id: id
+            },
+            relations: {
+                missionMade: {
+                    title: true
+                }
+            }
+        });
+    }
+
+    public async findByIdWithMissionMadeTitle(id: any){
+        return UserRepository.find({
+            where: {
+                id: id
+            },
+            relations: {
+                missionMade: {
+                    title: true
+                }
+            }
+        });
+    }
+
+    public async findAllByFullName(firstName: string, lastName: string){
         if (firstName === ""){
             throw new Api400Error(`firstName empty.`);
         }else if(lastName === ""){
@@ -21,44 +74,6 @@ const userService = {
             throw new Api404Error(`User with firstName: ${firstName} and lastName: ${lastName} not found.`);
         }
         return users;
-    },
-
-    findAllByFullName2: async (firstname: string, lastname: string) => {
-        return UserRepository.findAllByName(firstname, lastname);
-    },// en fait ca fait la meme chose qu'au dessus mais ca utilise notre fonction custom
-
-    findAll: async () => {
-        return UserRepository.find();
-    },
-
-    findByIdWithMissionCreated: async (userID: string) => {
-        const id = parseInt(userID);
-        return UserRepository.find({
-            where: {
-                id: id
-            },
-            relations: {
-                missionCreated: true
-            }
-        });
-    },
-
-    findByIdWithMissionMadeTitle: async (userID: string) => {
-        const id = parseInt(userID);
-        return UserRepository.find({
-            where: {
-                id: id
-            },
-            relations: {
-                missionMade: {
-                    title: true
-                }
-            }
-        });
-    },
-    create: async (user: User) => {
-        return UserRepository.save(user);// return only id
     }
+    
 }
-
-module.exports = userService;
