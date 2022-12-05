@@ -20,4 +20,11 @@ userRouter
     .route('/:id')
     .get(userController.id);
 
+userRouter
+    .route('/current')
+    .get(userController.getCurrentUser)
+    .put(function(req, res){
+      userController.update
+    });
+
 module.exports = userRouter;
