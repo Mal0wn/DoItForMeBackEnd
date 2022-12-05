@@ -43,6 +43,20 @@ const userService = {
         });
     },
 
+    /**
+     * Find one user by id
+     * @param userID
+     * @returns 
+     */
+    findOneById: async (userID: string) => {
+        const id = parseInt(userID);
+        return UserRepository.findOne({
+            where: {
+                id: id
+            }
+        });
+    },
+
     findByIdWithMissionMadeTitle: async (userID: string) => {
         const id = parseInt(userID);
         return UserRepository.find({
@@ -56,9 +70,31 @@ const userService = {
             }
         });
     },
+
     create: async (user: User) => {
         return UserRepository.save(user);// return only id
-    }
+    },
+    
+    update: async (user: User) => {
+        const userToUpdate = await UserRepository
+            .findOne({
+                where: {
+                    id: user.id
+                }
+            });
+
+        if (userToUpdate == undefined) {
+            throw new Api404Error(`User with id: ${user.id} not found.`);
+        }
+
+        userToUpdate.firstname = user.firstname;
+        userToUpdate.lastname = user.lastname;
+        userToUpdate.email = user.email;
+        userToUpdate.missionMade = user.missionMade;
+        userToUpdate.missionCreated = user.missionCreated;
+        
+        return UserRepository.save(userToUpdate);
+    },
 }
 
 module.exports = userService;
