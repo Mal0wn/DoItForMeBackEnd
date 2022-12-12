@@ -1,7 +1,10 @@
 import express, { Application, Request, Response } from 'express';
 import { dataSource } from "./dataSource";
 const indexRouter = require("./routes/index.route");
-
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+// import swaggerUi from 'swagger-ui-express';
+// import YAML from 'yamljs';
 import { User } from "./models/user.model"
 import { Mission } from "./models/mission.model"
 
@@ -14,8 +17,13 @@ dataSource.initialize()
   });
 
 const app: Application = express();
+
+const swaggerDocument = YAML.load('./swagger.yaml');
+app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json());
 app.use(indexRouter);
+
+
 
 
 
