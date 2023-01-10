@@ -11,4 +11,4 @@ missionRouter
 	.route('/:id')
     .get(missionController.id);
 
-module.exports = missionRouter;
+export default missionRouter
