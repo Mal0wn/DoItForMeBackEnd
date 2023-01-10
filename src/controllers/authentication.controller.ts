@@ -11,6 +11,7 @@ const authenticationController = {
 			res.json(connexion);
 			return;
 		} catch (error) {
+			console.log(error)
 			next(error);
 			return;
 		}
