@@ -17,6 +17,9 @@ dataSource.initialize()
 
 //Initialization App
 const app: Application = express();
+
+const swaggerDocument = YAML.load('./swagger.yaml');
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json());
 
 //Routers Redirection
