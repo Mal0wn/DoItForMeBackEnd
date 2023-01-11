@@ -20,4 +20,4 @@ userRouter
     .route('/:id')
     .get(userController.id);
 
-module.exports = userRouter;
+export default userRouter;
