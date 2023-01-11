@@ -1,28 +1,37 @@
+/* Importing the Request, Response, and NextFunction interfaces from the express module. */
 import { Request, Response, NextFunction } from "express";
 import { DecodeResult, EncodeResult, ExpirationStatus, PartialSession, Session, } from "../models/authentication.model";
 import { encode, TAlgorithm, decode } from "jwt-simple";
 
-//FUNCTION : securityJWTMiddleware
-//To manage requests with JWT
-export function securityJWTMiddleware(request: Request, response: Response, next: NextFunction) {
-    //FUNCTION : unauthorized
-    //To return if token is expired, null, invalid, or header is null
+/**
+ * It takes a request, response, and next function as parameters, and if the request has a valid JWT,
+ * it will call the next function.
+ * @param {Request} request - The request object.
+ * @param {Response} response - The response object.
+ * @param {NextFunction} next - A function to call when the middleware is complete.
+ */
+    export function securityJWTMiddleware(request: Request, response: Response, next: NextFunction) {
+
+    /**
+     * It returns a 401 status code with a message.
+     * @param {string} message - The message to be displayed to the user.
+     */
     const unauthorized = (message: string) => response.status(401).json({
         ok: false,
         status: 401,
         message: message
     });
 
-    const requestHeader = "X-JWT-Token";
-    const responseHeader = "X-Renewed-JWT-Token";
-    const header = request.header(requestHeader);
-    
+    /* Getting the authorization header from the request. */
+    let header : any = request.headers.authorization;
+    header = header.slice(7)
+
     if (!header) {
-        unauthorized(`Required ${requestHeader} header not found.`);
+        unauthorized(`Required header not found.`);
         return;
     }
 
-    const decodedSession: DecodeResult = decodeSession(`${process.env.SECRET_KEY_JWT}`, header);
+   const decodedSession: DecodeResult = decodeSession(`${process.env.SECRET_KEY_JWT}`, header);
     
     if (decodedSession.type === "integrity-error" || decodedSession.type === "invalid-token") {
         unauthorized(`Failed to decode or validate authorization token. Reason: ${decodedSession.type}.`);
@@ -39,15 +48,13 @@ export function securityJWTMiddleware(request: Request, response: Response, next
     let session: Session;
 
     if (expiration === "grace") {
-        //Renew the session and send it back with the response
         const { token, expires, issued } = encodeSession(`${process.env.SECRET_KEY_JWT}`, decodedSession.session);
         session = {
             ...decodedSession.session,
             expires: expires,
             issued: issued
         };
-
-        response.setHeader(responseHeader, token);
+        response.setHeader("authorization", token);
     } else {
         session = decodedSession.session;
     }
@@ -62,15 +69,18 @@ export function securityJWTMiddleware(request: Request, response: Response, next
     next();
 }
 
-//FUNCTION : encodeSession
-// To encode the session
+/**
+ * It takes a secret key and a partial session, and returns an encoded token, the issued time, and the
+ * expiration time
+ * @param {string} secretKey - The secret key used to encode the token.
+ * @param {PartialSession} partialSession - This is the session data that you want to encode.
+ * @returns An object with a token, issued, and expires.
+ */
 export function encodeSession(secretKey: string, partialSession: PartialSession): EncodeResult {
-    // Always use HS512 to sign the token
-    const algorithm: TAlgorithm = "HS512";
-    // Determine when the token should expire
-    const issued = Date.now();
-    const fifteenMinutesInMs = 15 * 60 * 1000;
-    const expires = issued + fifteenMinutesInMs;
+    const algorithm: TAlgorithm = `${process.env.ALGO_TOKEN_DECODE}`;
+    const issued : number = Date.now();
+    const tokenDurationInMs =  `${process.env.TOKEN_DURATION}`;
+    const expires : number = issued + +tokenDurationInMs;
     const session: Session = {
         ...partialSession,
         issued: issued,
@@ -84,21 +94,16 @@ export function encodeSession(secretKey: string, partialSession: PartialSession)
     };
 }
 
-//FUNCTION : decodeSession
-//To decode the Session
 export function decodeSession(secretKey: string, tokenString: string): DecodeResult {
-    // Always use HS512 to decode the token
-    const algorithm: TAlgorithm = "HS512";
-
+    const algorithm: TAlgorithm = `${process.env.ALGO_TOKEN_DECODE}`;
     let result: Session;
 
     try {
         result = decode(tokenString, secretKey, false, algorithm);
     } catch (_e: any) {
         const e: Error = _e;
-
-        // These error strings can be found here:
-        // https://github.com/hokaccha/node-jwt-simple/blob/c58bfe5e5bb049015fcd55be5fc1b2d5c652dbcd/lib/jwt.js
+        console.log(e)
+        
         if (e.message === "No token supplied" || e.message === "Not enough or too many segments") {
             return {
                 type: "invalid-token"
@@ -111,13 +116,11 @@ export function decodeSession(secretKey: string, tokenString: string): DecodeRes
             };
         }
 
-        // Handle json parse errors, thrown when the payload is nonsense
         if (e.message.indexOf("Unexpected token") === 0) {
             return {
                 type: "invalid-token"
             };
         }
-
         throw e;
     }
 
@@ -127,18 +130,14 @@ export function decodeSession(secretKey: string, tokenString: string): DecodeRes
     }
 }
 
-//FUNCTION : checkExpirationStatus
-//To check if the JWT is Expired
 export function checkExpirationStatus(token: Session): ExpirationStatus {
     const now = Date.now();
     
     if (token.expires > now) return "active";
+    const durationRefreshTokenInMs = `${process.env.ALGO_TOKEN_DECODE}`;
+    const afterExpiration = token.expires + +durationRefreshTokenInMs;
 
-    // Find the timestamp for the end of the token's grace period
-    const threeHoursInMs = 3 * 60 * 60 * 1000;
-    const threeHoursAfterExpiration = token.expires + threeHoursInMs;
-
-    if (threeHoursAfterExpiration > now) return "grace";
+    if (afterExpiration > now) return "grace";
 
     return "expired";
 }
