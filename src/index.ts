@@ -25,6 +25,8 @@ app.use(express.json());
 //Routers Redirection
 app.use("/login", authenticationRouter);
 app.use(`/user`, securityJWTMiddleware, userRouter);
+/* Using the securityJWTMiddleware middleware to check if the user is authenticated before accessing
+the missionRouter. */
 app.use(`/mission`, securityJWTMiddleware, missionRouter);
 
 //Port App Management

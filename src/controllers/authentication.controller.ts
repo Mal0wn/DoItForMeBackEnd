@@ -1,15 +1,18 @@
+/* Importing the authenticationService file. */
 const authenticationService = require("../services/authentication.service");
 
+/* Importing the Request, Response and NextFunction from the express module. */
 import { Request, Response , NextFunction } from "express";
 
 const authenticationController = {
 
     connexion : async (req: Request, res: Response, next: NextFunction) => { 
 		try {
-			const connexion = await authenticationService.findUser(req.body.email, req.body.password)
-			console.log(connexion)
-			res.json(connexion);
-			return;
+			await authenticationService.findUser(req.body.email, req.body.password)
+			.then((ress:any) => res.json(ress))
+			.catch((error: any) => {
+				res.send(error)
+			})
 		} catch (error) {
 			console.log(error)
 			next(error);

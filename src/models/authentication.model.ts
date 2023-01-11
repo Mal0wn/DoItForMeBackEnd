@@ -1,26 +1,23 @@
-// INTERFACE : Session 
-// For the Session Object
+/* Defining the types of the data that will be used in the session. */
 export interface Session {
     id: number;
     dateCreated: number;
+    role: string;
     username: string;
     // Timestamp Unix milliseconds.
     issued: number; 
     expires: number;
 }
 
-// INTERFACE : PartialSession 
-// For Session status
+/* Defining the types of the data that will be used in the PartialSession. */
 export type PartialSession = Omit<Session, "issued" | "expires">;
-
+/* Defining the types of the data that will be used in the EncodeResult. */
 export interface EncodeResult {
     token: string,
     expires: number,
-    issued: number
+    issued: number,
 }
-
-// INTERFACE : DecodeResult 
-// To Decode JWT
+/* Defining the types of the data that will be used in the DecodeResult. */
 export type DecodeResult =
     | {
           type: "valid";
@@ -32,7 +29,5 @@ export type DecodeResult =
     | {
           type: "invalid-token";
       };
-
-// INTERFACE : ExpirationStatus 
-// To Check JWt Status
+/* Defining the types of the data that will be used in the ExpirationStatus. */
 export type ExpirationStatus = "expired" | "active" | "grace";
