@@ -17,6 +17,9 @@ dataSource.initialize()
 
 //Initialization App
 const app: Application = express();
+
+const swaggerDocument = YAML.load('./swagger.yaml');
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json());
 
 //Routers Redirection
@@ -25,10 +28,6 @@ app.use(`/user`, securityJWTMiddleware, userRouter);
 /* Using the securityJWTMiddleware middleware to check if the user is authenticated before accessing
 the missionRouter. */
 app.use(`/mission`, securityJWTMiddleware, missionRouter);
-
-//Route and use Swagger
-const swaggerDocument = YAML.load('./swagger.yaml');
-app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //Port App Management
 const PORT = process.env.APP_PORT || 8000;

@@ -28,7 +28,7 @@ export class Mission {
 	@Column()
     id_create: number;
 
-	@Column()
+	@Column({nullable : true})
     id_make: number;
 
     @ManyToOne(() => User, (user) => user.missionCreated)
