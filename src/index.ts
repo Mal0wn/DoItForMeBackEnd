@@ -27,10 +27,6 @@ app.use("/login", authenticationRouter);
 app.use(`/user`, securityJWTMiddleware, userRouter);
 app.use(`/mission`, securityJWTMiddleware, missionRouter);
 
-//Route and use Swagger
-const swaggerDocument = YAML.load('./swagger.yaml');
-app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
 //Port App Management
 const PORT = process.env.APP_PORT || 8000;
 app.listen(PORT, () => {
