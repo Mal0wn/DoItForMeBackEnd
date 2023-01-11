@@ -64,9 +64,9 @@ const userService = {
                 id: id
             },
             relations: {
-                missionMade: {
+                missionMade: true/*{
                     title: true
-                }
+                }*/
             }
         });
     },
