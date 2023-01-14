@@ -19,7 +19,7 @@ dataSource.initialize()
 const app: Application = express();
 
 const swaggerDocument = YAML.load('./swagger.yaml');
-app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json());
 app.use(indexRouter);
 

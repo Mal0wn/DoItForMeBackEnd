@@ -45,6 +45,26 @@ const userController = {
             next(error);
             return;
         }
-    }
+    },
+    conversations: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const users = await userService.findByConversations(req.params.id);
+            res.json(users);
+            return;
+        } catch (error) {
+            next(error);
+            return;
+        }
+    },
+    missionConversations: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const users = await userService.findByConversationsMission(req.params.id, req.params.mission);
+            res.json(users);
+            return;
+        } catch (error) {
+            next(error);
+            return;
+        }
+    },
 }
 module.exports = userController;

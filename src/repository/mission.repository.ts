@@ -14,4 +14,3 @@ export const MissionRepository = dataSource.getRepository(Mission).extend({
 		.getOneOrFail()
 	}
 });
-

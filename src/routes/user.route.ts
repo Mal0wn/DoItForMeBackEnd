@@ -20,4 +20,8 @@ userRouter
     .route('/:id')
     .get(userController.id);
 
+userRouter
+    .route('/conversation/:id')
+    .get(userController.conversations);
+
 module.exports = userRouter;

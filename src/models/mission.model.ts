@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, JoinColumn, OneToOne } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, JoinColumn, OneToOne, OneToMany } from "typeorm"
 import { Address } from "./address.model";
+import { Message } from "./message.model";
 import { User } from "./user.model";
 
 @Entity()
@@ -28,7 +29,7 @@ export class Mission {
 	@Column()
     id_create: number;
 
-	@Column()
+	@Column({ nullable: true })
     id_make: number;
 
     @ManyToOne(() => User, (user) => user.missionCreated)
@@ -41,4 +42,7 @@ export class Mission {
 
     @OneToOne(() => Address, (address) => address.mission)
     address: Address;
+    
+    @OneToMany(() => Message, (message) => message.mission)
+    messages: Message[];
 }
