@@ -61,9 +61,7 @@ const userService = {
                 id: id
             },
             relations: {
-                missionMade: true/* {
-                    title: true
-                } */
+                missionMade: true
             }
         });
         if( users.length === 0){

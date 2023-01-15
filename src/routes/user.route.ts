@@ -13,15 +13,15 @@ userRouter
   );
 
 userRouter
-    .route('/name/:firstname/:lastname')
-    .get(userController.getByName);
+  .route('/name/:firstname/:lastname')
+  .get(userController.getByName);
 
 userRouter
-    .route('/:id')
-    .get(userController.id);
+  .route('/:id')
+  .get(userController.id);
 
 userRouter
-    .route('/conversation/:id')
-    .get(userController.conversations);
+  .route('/conversation/:id')
+  .get(userController.conversations);
 
-module.exports = userRouter;
+export default userRouter;

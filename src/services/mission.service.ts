@@ -23,9 +23,9 @@ const missionService = {
         }
 	},
 	create : async (mission : Mission) => {
-		if (mission.id != 0){
+		/* if (mission.id != 0){
 			throw new Api400Error(`Mission id must be 0 for creation ( = \'${mission.id}\')`);
-		}
+		} */
 		return MissionRepository.save(mission);
 	},
 	update : async (mission : Mission) => {
