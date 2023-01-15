@@ -77,7 +77,7 @@ import { encode, TAlgorithm, decode } from "jwt-simple";
  * @returns An object with a token, issued, and expires.
  */
 export function encodeSession(secretKey: string, partialSession: PartialSession): EncodeResult {
-    const algorithm: TAlgorithm = `${process.env.ALGO_TOKEN_DECODE}`;
+    const algorithm: TAlgorithm | string= `${process.env.ALGO_TOKEN_DECODE}`;
     const issued : number = Date.now();
     const tokenDurationInMs =  `${process.env.TOKEN_DURATION}`;
     const expires : number = issued + +tokenDurationInMs;
@@ -95,7 +95,7 @@ export function encodeSession(secretKey: string, partialSession: PartialSession)
 }
 
 export function decodeSession(secretKey: string, tokenString: string): DecodeResult {
-    const algorithm: TAlgorithm = `${process.env.ALGO_TOKEN_DECODE}`;
+    const algorithm: TAlgorithm | string= `${process.env.ALGO_TOKEN_DECODE}`;
     let result: Session;
 
     try {

@@ -29,11 +29,7 @@ export class Mission {
 	@Column()
     id_create: number;
 
-<<<<<<< HEAD
 	@Column({ nullable: true })
-=======
-	@Column({nullable : true})
->>>>>>> 760e5db33d7017cada3ec3fba29f121da910da6b
     id_make: number;
 
     @ManyToOne(() => User, (user) => user.missionCreated)
