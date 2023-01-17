@@ -11,6 +11,10 @@ tags:
     description: Everything about mission
   - name: user
     description: Operations about user
+  - name: address
+    description: Address available URLs
+  - name: message
+    description: Message available URLs
 paths:
   /mission:
     put:
@@ -64,12 +68,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Mission'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Mission'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Mission'
         required: true
       responses:
         '200':
@@ -78,10 +76,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Mission'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Mission'
-        '405':
+        '400':
           description: Invalid input
       security:
         - petstore_auth:
@@ -116,18 +111,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Mission'          
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Mission'
         '400':
           description: Invalid status value
       security:
         - petstore_auth:
             - write:missions
             - read:missions
-
   /mission/{missionId}:
     get:
       tags:
@@ -157,11 +146,39 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Mission not found
+    delete:
+      tags:
+        - mission
+      summary: Remove a mission 
+      description: Remove a mission 
+      operationId: delete
+      requestBody:
+        description: Delete an existing mission
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Mission'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid ID supplied
+      security:
+        - petstore_auth:
+            - write:missions
+            - read:missions
   /mission/{missionId}/uploadImage:
     post:
       tags:
         - mission
-      summary: uploads an image
+      summary: uploads an image (mais autant utiliser update ?)
       description: ''
       operationId: uploadFile
       parameters:
@@ -191,6 +208,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
+  /mission/findByRadius:
+    get:
+      tags:
+        - mission
+      summary: search missions in defined radius / position
+      description: 'return an array of Mission'
+      operationId: searchMission
+      parameters:
+          - in: query
+            name: latitude
+            required: true
+            schema:
+              type: float
+            description: current latitude of user
+          - in: query
+            name: longitude
+            required: true
+            schema:
+              type: float
+            description: current longitude of user
+          - in: query
+            name: radius
+            required: true
+            schema:
+              type: integer
+            description: radius to search in kilometers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Mission'          
+        '400':
+          description: Invalid parameters supplied
+        '404':
+          description: No Mission Found for current parameters
   /user:
     post:
       tags:
@@ -204,20 +260,11 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/User'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/User'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/User'
       responses:
         default:
           description: successful operation
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-            application/xml:
               schema:
                 $ref: '#/components/schemas/User'
   /user/login:
@@ -274,17 +321,161 @@ paths:
       responses:
         default:
           description: successful operation
+  /user/conversations/{userId}:
+    get:
+      tags:
+        - user
+      summary: Find all users you have a conversation With
+      description: Find all users you have a conversation With for given ID
+      operationId: findConversationsById
+      parameters:
+        - name: userId
+          in: path
+          description: ID of target User
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'          
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: No Conversations for current User
+  /user/conversations/mission/{userId}:
+    get:
+      tags:
+        - user
+      summary: Find all Users that sent you a message for given Mission
+      description: Find all Users that sent you a message for given User & Mission ID
+      operationId: findMissionConversationsById
+      parameters:
+        - name: userId
+          in: path
+          description: ID of target User
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: missionId
+          in: query
+          description: ID of target Mission
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'          
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: No Conversations for current User
+  /address:
+    post:
+      tags:
+        - address
+      summary: Create Address
+      description: This can only be done by the logged in user.
+      operationId: create
+      parameters:
+        - name: addressId
+          in: path
+          description: ID of Address to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Created Address object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+        '400':
+          description: Invalid input
+        '404':
+          description: User Not Found
+    put:
+      tags:
+        - address
+      summary: Update Address
+      description: This can only be done by the logged in user.
+      operationId: update
+      requestBody:
+        description: Updated Address object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+        '400':
+          description: Invalid input
+        '404':
+          description: User Not Found
+  /address/{addressId}:
+    delete:
+      tags:
+        - address
+      summary: Delete Address
+      description: Delete Address
+      operationId: delete
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Address Not Found
+      security:
+        - petstore_auth:
+            - write:address
+            - read:address
 components:
   schemas:
     Address:
       required:
+        - id
         - number
         - street
         - zip_code
         - city
         - country  
+        - complement
+        - latitude
+        - longitude
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
         number : 
           type : number 
           example : '403' 
@@ -303,6 +494,12 @@ components:
         zip_code:
           type: string
           example: '94301'
+        latitude: 
+          type: float
+          example: '89.99999'
+        longitude:
+          type: float
+          example: '179.99999'
       xml:
         name: address
     User:
@@ -347,14 +544,14 @@ components:
           name: user
     Mission:
       required:
-        - name
+        - id
+        - picture
         - status
         - price
         - title 
         - description
         - creation_date
         - id_create 
-        - id_make 
       type: object
       properties:
         id:
