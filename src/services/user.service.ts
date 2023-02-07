@@ -42,6 +42,13 @@ const userService = {
             }
         });
     },
+    findUserById: async (userId: number) => {
+        return UserRepository.findOne({
+            where: {
+                id: userId
+            }
+        });
+    },
 
     findByIdWithMissionMadeTitle: async (userID: string) => {
         const id = parseInt(userID);
@@ -56,6 +63,34 @@ const userService = {
     },
     create: async (user: User) => {
         return UserRepository.save(user);// return only id
+    },
+    update: async (user: User) => {
+        // Get user from database
+        let dbUser = UserRepository.findOne({
+            where: {
+                id: user.id
+            }
+        }).then((dbUser) => {
+            // check if user exist in database
+            if (!dbUser){
+                throw new Api404Error(`User with id: ${user.id} not found.`);
+            }
+            // Update user
+            dbUser.firstname = user.firstname;
+            dbUser.lastname = user.lastname;
+            dbUser.email = user.email;
+            dbUser.picture = user.picture;
+            dbUser.birthday = user.birthday;
+            dbUser.phone = user.phone;
+            // Save user in database
+            return UserRepository.save(dbUser);
+        }).catch((error) => {
+            console.error(error);
+            
+            throw error;
+        });
+
+        return dbUser;
     }
 }
 
