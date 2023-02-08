@@ -20,4 +20,14 @@ userRouter
     .route('/:id')
     .get(userController.id);
 
+userRouter
+    .route('/currentUser/me')
+    .get(userController.getCurrentUser)
+    .put(userController.updateCurrentUser)
+    .delete(userController.deleteUser);
+
+userRouter
+    .route('/currentUser/updatePassword')
+    .put(userController.updatePassword);
+
 export default userRouter;
