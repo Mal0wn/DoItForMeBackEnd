@@ -13,16 +13,26 @@
 
 ## Installation
 
-- Clone the Github repository
-- ```shell
-  npm install
-  ```
+Clone the Github repository
 
-- Create .env file :
+Install the packages:
+```shell
+npm install
+```
 
-  ```env
-  To do
-  ```
+Create .env file :
+
+```
+To do
+```
+
+## Database installation
+Create MySql database named like your DB_NAME in .env file.
+
+follow the link to find the sql file ==>
+[data.sql](./src/data)
+
+run it in your mysql database
 
 ## Start
 
@@ -33,6 +43,14 @@ Open to
 http://localhost:8000/
 if this one is already occupied, it will start on
 http://localhost:3000/
+
+Use Postman to create your first user
+````Json
+{
+  "firstname": "John",
+  To do
+}
+````
 
 ## Test
 
