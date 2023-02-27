@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import { dataSource } from "./dataSource";
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
+const cors = require('cors');
 import userRouter from './routes/user.route';
 import missionRouter from './routes/mission.route';
 import authenticationRouter from './routes/authentication.route';
@@ -21,6 +22,9 @@ const app: Application = express();
 const swaggerDocument = YAML.load('./swagger.yaml');
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json());
+
+//CORS
+app.use(cors());
 
 //Routers Redirection
 app.use("/login", authenticationRouter);
