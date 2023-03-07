@@ -36,7 +36,17 @@ const userController = {
             return;
         }
     },
-    id: async (req: Request, res: Response, next: NextFunction) => {
+    idAll: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const users = await userService.findById(req.params.id);
+            res.json(users);
+            return;
+        } catch (error) {
+            next(error);
+            return;
+        }
+    },
+    idCreator: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const users = await userService.findByIdWithMissionCreated(req.params.id);
             res.json(users);

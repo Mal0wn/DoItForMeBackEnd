@@ -24,9 +24,28 @@ const userService = {
         return users;
     },
 
-    //findAllByFullName2: async (firstname: string, lastname: string) => {
-    //    return UserRepository.findAllByName(firstname, lastname);
-    //},// en fait ca fait la meme chose qu'au dessus mais ca utilise notre fonction custom
+    findById: async (userID: string) => {
+        const id = parseInt(userID);
+        if (!isNaN(id)){
+            throw new Api400Error(`invalid User id ( = \'${userID}\')`);
+        }
+        const users = await UserRepository.find({
+            where: {
+                id: id
+            },
+            relations: {
+                missionCreated: true,
+                missionMade: true,
+                received: true,
+                sent: true,
+                address: true
+            }
+        });
+        if( users.length === 0){
+            throw new Api404Error(`No User Found for id = ${userID}`);
+        }
+        return users;
+    },
 
     findAll: async () => {
         return UserRepository.find();
@@ -71,6 +90,10 @@ const userService = {
     },
     create: async (user: User) => {
         return UserRepository.save(user);// return only id
+    },
+
+    update: async (user: User) => {
+        return UserRepository.update( { id: user.id }, user);// return only id
     },
     
     findByConversations: async (userID: string) => {

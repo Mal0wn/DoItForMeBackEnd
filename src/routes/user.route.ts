@@ -17,8 +17,11 @@ userRouter
   .get(userController.getByName);
 
 userRouter
+  .route('/created/:id')
+  .get(userController.idCreator);
+userRouter
   .route('/:id')
-  .get(userController.id);
+  .get(userController.idAll);
 
 userRouter
   .route('/conversation/:id')
