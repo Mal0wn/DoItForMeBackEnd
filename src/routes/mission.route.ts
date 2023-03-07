@@ -8,9 +8,22 @@ missionRouter
 	.put(missionController.update)
 	.post(missionController.create);
 
+	
+	missionRouter 
+	.route('/search')
+    .get(missionController.search);
+	
+	missionRouter 
+	.route('/search/price')
+    .get(missionController.searchPrice);
+	
+	missionRouter 
+	.route('/search/string')
+    .get(missionController.searchString);
+	
 missionRouter 
 	.route('/:id')
-    .get(missionController.id)
+	.get(missionController.id)
 	.delete(missionController.delete);
-
-export default missionRouter
+	
+	export default missionRouter

@@ -14,8 +14,8 @@ VALUES
 ('Eva', 'Jolie', 'eva@jolie.fr', '$2a$10$uNgn1t2Hpj9gmg36hJyN8uDaIekKyVdto9apFL0tWduRzUd91HL/e', 'jsaispas', '1918-09-24', '0123456789'),
 ('domi', 'neur', 'domi@neur.fr', '$2a$10$uNgn1t2Hpj9gmg36hJyN8uDaIekKyVdto9apFL0tWduRzUd91HL/e', 'TMTC', '1234-09-24', '0123456789');
 SET @id1 = LAST_INSERT_ID();
-SET @id2 = @id1 + 1;
-SET @id3 = @id2 + 1;
+SET @id2 = @id1 +1;
+SET @id3 = @id2 +1;
 
 SET foreign_key_checks = 0;
 INSERT INTO doit4me.mission ( status, title, description, id_create, price)
@@ -24,6 +24,8 @@ VALUES ('ongoing', 'mission1', 'test mission 1', @id1, '10'),
 ('ongoing', 'mission3', 'test mission 3', @id1, '10');
 SET foreign_key_checks = 1;
 SET @mi1 = LAST_INSERT_ID();
+SET @mi2 = @mi1 +1;
+SET @mi3 = @mi2 +1;
 SET SQL_SAFE_UPDATES=0;
 UPDATE doit4me.mission  SET id_make = @id3 WHERE mission.id = @mi1 +1;
 SET SQL_SAFE_UPDATES=1;

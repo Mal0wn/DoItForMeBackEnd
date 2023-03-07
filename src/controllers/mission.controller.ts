@@ -58,5 +58,33 @@ const missionController = {
 		}
 
 	},
+    search: async(req: Request, res: Response, next: NextFunction) => { 
+        try {
+        const missions = await missionService.search(req.query.lat, req.query.long, req.query.radius);
+        res.json(missions);
+        } catch(error) {
+            next(error);
+            return;
+        }
+    },
+    searchPrice: async(req: Request, res: Response, next: NextFunction) => { 
+        try {
+        const missions = await missionService.searchPrice(req.query.min, req.query.max, req.query.lat, req.query.long, req.query.radius);
+        res.json(missions);
+        } catch(error) {
+            next(error);
+            return;
+        }
+    },
+    searchString: async(req: Request, res: Response, next: NextFunction) => { 
+        try {
+        const missions = await missionService.searchString(req.query.string, req.query.lat, req.query.long, req.query.radius);
+        res.json(missions);
+        } catch(error) {
+            next(error);
+            return;
+        }
+    },
+
 }
 module.exports = missionController;

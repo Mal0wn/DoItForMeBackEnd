@@ -12,7 +12,11 @@ const missionService = {
 		const mission = await MissionRepository.find({
 			where: {
 			id: id
-			}
+			},
+            relations: {
+                creator: true,
+                address: true
+              }
 		})
         if( mission.length < 1){
             throw new Api404Error(`No Mission Found for id: ${missionId}`);
@@ -40,59 +44,64 @@ const missionService = {
         }
 		return;
 	},
-	searchGeo: async (geo: Geoposition, km: string) => {
-        if (isNaN(geo.latitude)){
-            throw new Api400Error(`invalid Latitude`);
+	search: async (lat: string, long: string, km: string) => {
+        const latitude = parseFloat(lat);
+        if (isNaN(latitude)){
+            throw new Api400Error(`invalid Latitude ( = \'${lat}\')`);
         }
-        if (isNaN(geo.longitude)){
-            throw new Api400Error(`invalid Longitude`);
+        const longitude = parseFloat(lat);
+        if (isNaN(longitude)){
+            throw new Api400Error(`invalid Longitude ( = \'${long}\')`);
         }
         let kmRadius = parseInt(km);
         if (isNaN(kmRadius)){
             throw new Api400Error(`invalid Range ( = \'${km}\')`);
         }
-        //Minimal Calculation of search radius according to earth curve
         const latRadius = kmRadius / 110.56;
-        const longRadius = kmRadius / 111.11 * Math.cos( geo.longitude*(Math.PI*180));
-        const res = await MissionRepository.search(geo.latitude, geo.longitude, latRadius, longRadius);
+        const longRadius = kmRadius / 111.11 * Math.cos( longitude*(Math.PI*180));
+        const res = await MissionRepository.search(latitude, longitude, latRadius, longRadius);
         if( res.length < 1){
             throw new Api404Error(`No Mission Found`);
         }
         return res;
     },
-	searchBounty: async (min: number, max: number, geo: Geoposition, km: string) => {
-        if (isNaN(geo.latitude)){
-            throw new Api400Error(`invalid Latitude`);
+	searchPrice: async (min: number, max: number, lat: string, long: string, km: string) => {
+        const latitude = parseFloat(lat);
+        if (isNaN(latitude)){
+            throw new Api400Error(`invalid Latitude ( = \'${lat}\')`);
         }
-        if (isNaN(geo.longitude)){
-            throw new Api400Error(`invalid Longitude`);
+        const longitude = parseFloat(lat);
+        if (isNaN(longitude)){
+            throw new Api400Error(`invalid Longitude ( = \'${long}\')`);
         }
         let kmRadius = parseInt(km);
         if (isNaN(kmRadius)){
             throw new Api400Error(`invalid Range ( = \'${km}\')`);
         }
         const latRadius = kmRadius / 110.56;
-        const longRadius = kmRadius / 111.11 * Math.cos( geo.longitude*(Math.PI*180));
-        const res = await MissionRepository.searchPrice(geo.latitude, geo.longitude, latRadius, longRadius, min, max);
+        const longRadius = kmRadius / 111.11 * Math.cos( longitude*(Math.PI*180));
+        const res = await MissionRepository.searchPrice(latitude, longitude, latRadius, longRadius, min, max);
         if( res.length < 1){
             throw new Api404Error(`No Mission Found`);
         }
         return res;
     },
-	searchString: async (str: string, geo: Geoposition, km: string) => {
-		if (isNaN(geo.latitude)){
-            throw new Api400Error(`invalid Latitude`);
+	searchString: async (str: string, lat: string, long: string, km: string) => {
+		const latitude = parseFloat(lat);
+        if (isNaN(latitude)){
+            throw new Api400Error(`invalid Latitude ( = \'${lat}\')`);
         }
-        if (isNaN(geo.longitude)){
-            throw new Api400Error(`invalid Longitude`);
+        const longitude = parseFloat(lat);
+        if (isNaN(longitude)){
+            throw new Api400Error(`invalid Longitude ( = \'${long}\')`);
         }
         let kmRadius = parseInt(km);
         if (isNaN(kmRadius)){
             throw new Api400Error(`invalid Range ( = \'${km}\')`);
         }
         const latRadius = kmRadius / 110.56;
-        const longRadius = kmRadius / 111.11 * Math.cos( geo.longitude*(Math.PI*180));
-        const res = await MissionRepository.searchString(geo.latitude, geo.longitude, latRadius, longRadius, str);
+        const longRadius = kmRadius / 111.11 * Math.cos( longitude*(Math.PI*180));
+        const res = await MissionRepository.searchString(latitude, longitude, latRadius, longRadius, str);
         if( res.length < 1){
             throw new Api404Error(`No Mission Found`);
         }
@@ -101,4 +110,3 @@ const missionService = {
 }
 
 module.exports = missionService;
-
