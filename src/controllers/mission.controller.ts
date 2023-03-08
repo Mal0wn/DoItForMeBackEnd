@@ -17,9 +17,8 @@ const missionController = {
 	},
 	create: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const missionID = await missionService.create(req.body);
-            console.log(missionID);
-            res.json(missionID);
+            await missionService.create(req.body);
+            res.sendStatus(200);
             return;
         } catch (error) {
             next(error);
@@ -28,9 +27,8 @@ const missionController = {
     },
 	delete: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const missionID = await missionService.delete(req.params.id);
-            console.log(missionID);
-            res.json(missionID);
+            await missionService.delete(req.params.id);
+            res.sendStatus(200);
             return;
         } catch (error) {
             next(error);

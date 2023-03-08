@@ -1,4 +1,5 @@
 import express, { Application } from 'express';
+import expressWs from 'express-ws';
 import { dataSource } from "./dataSource";
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
@@ -7,6 +8,8 @@ import missionRouter from './routes/mission.route';
 import authenticationRouter from './routes/authentication.route';
 import { securityJWTMiddleware } from './middleware/token.middleware';
 import { errorMiddleware } from './middleware/error.middleware';
+import * as path from "path";
+import { wsMiddleware } from './middleware/ws.middleware';
 
 dataSource.initialize()
   .then(() => {
@@ -16,8 +19,10 @@ dataSource.initialize()
     console.error("Error during Data Source initialization:", err)
   });
 
-//Initialization App
-const app: Application = express();
+//Initialization App to support websocket
+var appWs = expressWs(express());  // appWs.getWss().clients to find all users connected
+const app = appWs.app;
+app.locals.notifications = [];
 
 const swaggerDocument = YAML.load('./swagger.yaml');
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -25,12 +30,25 @@ app.use(express.json());
 //Routers Redirection
 app.use("/login", authenticationRouter);
 app.use(`/user`, securityJWTMiddleware, userRouter);
-/* Using the securityJWTMiddleware middleware to check if the user is authenticated before accessing
-the missionRouter. */
+// Using the securityJWTMiddleware middleware to check if the user is authenticated before accessingthe missionRouter. 
 app.use(`/mission`, securityJWTMiddleware, missionRouter);
 app.use(errorMiddleware);
+//C:\Users\jblan\Documents\dev\projet3\DoItForMeBackEnd\src\wsTest\index.html
+app.get("/client", (req: any, res: any) => {
+  res.sendFile(path.resolve("./src/wsTest/index.html"));
+});
+app.ws(`/ws`, wsMiddleware);
+app.ws(`/test`, (ws, req) => {
+  ws.onopen = () => {
+    
+  }
+  ws.on('message', ()=>{
+    console.log(appWs.getWss().clients)
+  })
+});
+
 //Port App Management
 const PORT = process.env.APP_PORT || 8000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
 });

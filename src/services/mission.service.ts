@@ -1,6 +1,5 @@
 import { Api400Error, Api404Error } from "../errors/api.error";
 import { Mission } from "../models/mission.model";
-import { Geoposition } from "../models/geoposition.model";
 import { MissionRepository } from "../repository/mission.repository";
 
 const missionService = {
@@ -26,13 +25,14 @@ const missionService = {
 	create : async (mission : Mission) => {
 		const test = await MissionRepository.find({
 			where: {
-			id: mission.id
+			    id: mission.id
 			}
 		});
 		if( test.length > 0){
             throw new Api400Error(`Mission Already exist for id: ${mission.id}`);
         }
-		const missionCreated = await MissionRepository.save(mission);
+		await MissionRepository.save(mission);
+        return;
 	},
 	update : async (mission : Mission) => {
 		return await MissionRepository.save(mission);
