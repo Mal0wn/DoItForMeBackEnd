@@ -36,10 +36,15 @@ const userController = {
             return;
         }
     },
-    idAll: async (req: Request, res: Response, next: NextFunction) => {
+    id: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const users = await userService.findById(req.params.id);
-            res.json(users);
+            let user = [];
+            if( req.query.full == "1"){
+                user = await userService.findAllById(req.params.id);
+            }else{
+                user = await userService.findById(req.params.id);
+            }
+            res.json(user[0]);
             return;
         } catch (error) {
             next(error);
@@ -56,9 +61,9 @@ const userController = {
             return;
         }
     },
-    conversations: async (req: Request, res: Response, next: NextFunction) => {
+    allConv: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const users = await userService.findByConversations(req.params.id);
+            const users = await userService.getAllUserIdConv(req.params.id);
             res.json(users);
             return;
         } catch (error) {
@@ -66,15 +71,15 @@ const userController = {
             return;
         }
     },
-    missionConversations: async (req: Request, res: Response, next: NextFunction) => {
+    missionConv: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const users = await userService.findByConversationsMission(req.params.id, req.params.mission);
+            const users = await userService.getUserConvByMission(req.query.id, req.query.mission);
             res.json(users);
             return;
         } catch (error) {
             next(error);
             return;
         }
-    },
+    }
 }
 module.exports = userController;

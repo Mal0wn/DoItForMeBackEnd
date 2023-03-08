@@ -24,9 +24,9 @@ const userService = {
         return users;
     },
 
-    findById: async (userID: string) => {
+    findAllById: async (userID: string) => {
         const id = parseInt(userID);
-        if (!isNaN(id)){
+        if (isNaN(id)){
             throw new Api400Error(`invalid User id ( = \'${userID}\')`);
         }
         const users = await UserRepository.find({
@@ -41,7 +41,22 @@ const userService = {
                 address: true
             }
         });
-        if( users.length === 0){
+        if( users.length < 1){
+            throw new Api404Error(`No User Found for id = ${userID}`);
+        }
+        return users;
+    },
+    findById: async (userID: string) => {
+        const id = parseInt(userID);
+        if (isNaN(id)){
+            throw new Api400Error(`invalid User id ( = \'${userID}\')`);
+        }
+        const users = await UserRepository.find({
+            where: {
+                id: id
+            }
+        });
+        if( users.length < 1){
             throw new Api404Error(`No User Found for id = ${userID}`);
         }
         return users;
@@ -53,7 +68,7 @@ const userService = {
 
     findByIdWithMissionCreated: async (userID: string) => {
         const id = parseInt(userID);
-        if (!isNaN(id)){
+        if (isNaN(id)){
             throw new Api400Error(`invalid User id ( = \'${userID}\')`);
         }
         const users = await UserRepository.find({
@@ -72,7 +87,7 @@ const userService = {
 
     findByIdWithMissionMadeTitle: async (userID: string) => {
         const id = parseInt(userID);
-        if (!isNaN(id)){
+        if (isNaN(id)){
             throw new Api400Error(`invalid User id ( = \'${userID}\')`);
         }
         const users = await UserRepository.find({
@@ -95,33 +110,33 @@ const userService = {
     update: async (user: User) => {
         return UserRepository.update( { id: user.id }, user);// return only id
     },
-    
-    findByConversations: async (userID: string) => {
-        const id = parseInt(userID);
-        if (!isNaN(id)){
-            throw new Api400Error(`invalid User id ( = \'${userID}\')`);
-        }
-        const users = await UserRepository.getAllConversationUsers(id);
-        if( users.length === 0){
-            throw new Api404Error(`No Conversation Users Found for User id = ${userID}`);
-        }
-        return users;
-    },
-    findByConversationsMission: async (userID: string, missionID: string) => {
+
+    getUserConvByMission: async (userID: string, missionID: string) => {
         const idUser = parseInt(userID);
-        if (!isNaN(idUser)){
+        if (isNaN(idUser)){
             throw new Api400Error(`invalid User id ( = \'${userID}\')`);
         }
         const idMission = parseInt(missionID);
-        if (!isNaN(idMission)){
+        if (isNaN(idMission)){
             throw new Api400Error(`invalid Mission id ( = \'${missionID}\')`);
         }
-        const users = await UserRepository.getAllConversationUsersByMission(idUser, idMission);
-        if( users.length === 0){
-            throw new Api404Error(`No User Found for Mission id = ${userID}`);
+        const users = await UserRepository.getUserConvByMission(idUser, idMission);
+        if( users.length < 1){
+            throw new Api404Error(`No Conversation Found`);
         }
         return users;
     },
+    getAllUserIdConv: async (userID: string) => {
+        const id = parseInt(userID);
+        if (isNaN(id)){
+            throw new Api400Error(`invalid User id ( = \'${userID}\')`);
+        }
+        const users = await UserRepository.getAllUserIdConv(id);
+        if( users.length < 1){
+            throw new Api404Error(`No Conversation Found`);
+        }
+        return users;
+    }
 }
 
 module.exports = userService;

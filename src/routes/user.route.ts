@@ -19,12 +19,17 @@ userRouter
 userRouter
   .route('/created/:id')
   .get(userController.idCreator);
+
 userRouter
-  .route('/:id')
-  .get(userController.idAll);
+  .route('/conversation/mission')
+  .get(userController.missionConv);
 
 userRouter
   .route('/conversation/:id')
-  .get(userController.conversations);
+  .get(userController.allConv);
+
+userRouter
+  .route('/:id')
+  .get(userController.id);
 
 export default userRouter;

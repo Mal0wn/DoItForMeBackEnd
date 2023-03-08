@@ -52,5 +52,5 @@ export const MissionRepository = dataSource.getRepository(Mission).extend({
 		.andWhere('mission.id_make is null')
 		.andWhere("mission.title like :string", { string:`%${str}%` })
         .getMany();
-	},
+	}
 });
