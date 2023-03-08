@@ -23,14 +23,7 @@ const missionService = {
 		return mission;
 	},
 	create : async (mission : Mission) => {
-		const test = await MissionRepository.find({
-			where: {
-			    id: mission.id
-			}
-		});
-		if( test.length > 0){
-            throw new Api400Error(`Mission Already exist for id: ${mission.id}`);
-        }
+		mission.id = 0;
 		const tmp = await MissionRepository.save(mission);
         return tmp.id;
 	},

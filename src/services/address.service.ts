@@ -22,7 +22,7 @@ const addressService = {
 	findByUserID: async (id: string) => {
         const idUser = parseInt(id);
         if (isNaN(idUser)){
-            throw new Api400Error(`invalid Mission id: ${id}`);
+            throw new Api400Error(`invalid User id: ${id}`);
         }
         const address = await AddressRepository.find({
             where : { 
@@ -50,14 +50,7 @@ const addressService = {
         return address;
     },
 	create : async (address : Address) => {
-        const test = await AddressRepository.find({
-			where: {
-			    id: address.id
-			}
-		});
-		if( test.length > 0){
-            throw new Api400Error(`Mission Already exist for id: ${address.id}`);
-        }
+        address.id = 0;
 		const tmp = await AddressRepository.save(address);
         return tmp.id;
 	},

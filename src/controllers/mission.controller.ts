@@ -37,9 +37,8 @@ const missionController = {
     },
 	update: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const missionID = await missionService.update(req.body);
-            console.log(missionID);
-            res.json(missionID);
+            const mission = await missionService.update(req.body);
+            res.json(mission);
             return;
         } catch (error) {
             next(error);

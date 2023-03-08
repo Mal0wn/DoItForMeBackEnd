@@ -11,6 +11,7 @@ import { errorMiddleware } from './middleware/error.middleware';
 import * as path from "path";
 import { wsMiddleware } from './middleware/ws.middleware';
 import messageRouter from './routes/message.route';
+import addressRouter from './routes/address.route';
 
 dataSource.initialize()
   .then(() => {
@@ -34,6 +35,9 @@ app.use("/login", authenticationRouter);
 app.use(`/user`, securityJWTMiddleware, userRouter);
 app.use(`/mission`, securityJWTMiddleware, missionRouter);
 app.use(`/message`, securityJWTMiddleware, messageRouter);
+app.use(`/address`, securityJWTMiddleware, addressRouter);
+
+// error handling , must be .use as last
 app.use(errorMiddleware);
 
 //page test websocket

@@ -86,6 +86,7 @@ const missionService = {
     },
 	create : async (message : Message) => {
         message.time = new Date();
+        message.id = 0;
 		const tmp = await MessageRepository.save(message);
         return tmp.id;
 	},

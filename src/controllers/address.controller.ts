@@ -34,9 +34,8 @@ const addressController = {
     },
 	update: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const missionID = await addressService.update(req.body);
-            console.log(missionID);
-            res.json(missionID);
+            const address = await addressService.update(req.body);
+            res.json(address);
             return;
         } catch (error) {
             next(error);
@@ -45,7 +44,7 @@ const addressController = {
     },
     findByUserID: async(req: Request, res: Response, next: NextFunction) => { 
         try {
-        const missions = await addressService.search(req.query.lat, req.query.long, req.query.radius);
+        const missions = await addressService.findByUserID(req.params.id);
         res.json(missions);
         } catch(error) {
             next(error);
@@ -54,22 +53,12 @@ const addressController = {
     },
     findByMissionID: async(req: Request, res: Response, next: NextFunction) => { 
         try {
-        const missions = await addressService.searchPrice(req.query.min, req.query.max, req.query.lat, req.query.long, req.query.radius);
+        const missions = await addressService.findByMissionID(req.params.id);
         res.json(missions);
         } catch(error) {
             next(error);
             return;
         }
-    },
-    searchString: async(req: Request, res: Response, next: NextFunction) => { 
-        try {
-        const missions = await addressService.searchString(req.query.string, req.query.lat, req.query.long, req.query.radius);
-        res.json(missions);
-        } catch(error) {
-            next(error);
-            return;
-        }
-    },
-
+    }
 }
 module.exports = addressController;
