@@ -31,8 +31,8 @@ const missionService = {
 		if( test.length > 0){
             throw new Api400Error(`Mission Already exist for id: ${mission.id}`);
         }
-		await MissionRepository.save(mission);
-        return;
+		const tmp = await MissionRepository.save(mission);
+        return tmp.id;
 	},
 	update : async (mission : Mission) => {
 		return await MissionRepository.save(mission);
@@ -40,7 +40,7 @@ const missionService = {
 	delete : async (id : number) => {
 		const status = await MissionRepository.delete(id);
 		if( status.affected === 0){
-            throw new Api400Error(`Delete failed, No entry for id: ${id}`);
+            throw new Api404Error(`Delete failed, No entry for id: ${id}`);
         }
 		return;
 	},

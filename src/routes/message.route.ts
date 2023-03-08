@@ -5,11 +5,6 @@ const messageRouter = express.Router();
 messageRouter
 	.route("/")
 	.post(messageController.create);
-
-messageRouter 
-	.route('/:id')
-    .get(messageController.id)
-	.delete(messageController.delete);
 	
 messageRouter
 	.route('/conversation')
@@ -22,5 +17,10 @@ messageRouter
 messageRouter
 	.route('/user/:id')
 	.get(messageController.findBySender);
+
+messageRouter 
+	.route('/:id')
+    .get(messageController.id)
+	.delete(messageController.delete);
 	
 export default messageRouter;

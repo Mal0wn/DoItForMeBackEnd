@@ -6,7 +6,7 @@ const missionService = {
 
 	findById: async (messageid : string) => {
         const id = parseInt(messageid); 
-		if (!isNaN(id)){
+		if (isNaN(id)){
             throw new Api400Error(`Invalid Message id: ${messageid}`);
         }
         const messages = await MessageRepository.find({
@@ -21,15 +21,15 @@ const missionService = {
     },
 	findByConversation: async (userID_1 : string, userID_2: string, missionID: string) => {
 		const id1 = parseInt(userID_1);
-		if (!isNaN(id1)){
-            throw new Api400Error(`Invalid User id 1: '${userID_1}`);
+		if (isNaN(id1)){
+            throw new Api400Error(`Invalid User id 1: ${userID_1}`);
         }
         const id2 = parseInt(userID_2); 
-		if (!isNaN(id2)){
+		if (isNaN(id2)){
             throw new Api400Error(`Invalid User id 2: ${userID_2}`);
         }
         const id = parseInt(missionID); 
-		if (!isNaN(id)){
+		if (isNaN(id)){
             throw new Api400Error(`Invalid Mission id: ${missionID}`);
         }
 		const messages = await MessageRepository.find({
@@ -49,7 +49,7 @@ const missionService = {
 	},
     findByMission: async (missionID: string) => {
         const id = parseInt(missionID); 
-		if (!isNaN(id)){
+		if (isNaN(id)){
             throw new Api400Error(`Invalid Mission id: ${missionID}`);
         }
         const messages = await MessageRepository.find({
@@ -68,7 +68,7 @@ const missionService = {
     },
     findBySender: async (senderID: string) => {
         const id = parseInt(senderID); 
-		if (!isNaN(id)){
+		if (isNaN(id)){
             throw new Api400Error(`Invalid User id: ${senderID}`);
         }
         const messages = await MessageRepository.find({
@@ -86,13 +86,13 @@ const missionService = {
     },
 	create : async (message : Message) => {
         message.time = new Date();
-		await MessageRepository.save(message);
-        return;
+		const tmp = await MessageRepository.save(message);
+        return tmp.id;
 	},
     delete : async (id : number) => {
 		const status = await MessageRepository.delete(id);
 		if( status.affected === 0){
-            throw new Api400Error(`Delete failed, No entry for id: ${id}`);
+            throw new Api404Error(`Delete failed, No entry for id: ${id}`);
         }
 		return;
 	}

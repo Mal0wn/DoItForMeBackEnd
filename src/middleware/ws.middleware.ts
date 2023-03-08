@@ -1,4 +1,5 @@
 import { Notification } from "../blueprints/socketitem.blueprint";
+import { checkTokenValidityAndExpiration } from "./token.middleware";
 
 // this middleware handles websocket and is only meant for notifications
 export function wsMiddleware(ws: any, req: any) {
@@ -6,6 +7,17 @@ export function wsMiddleware(ws: any, req: any) {
         // if user does not send his db_id , close connection
         if (!req.query.id){
             ws.close(1008, 'Missing identifier');
+        }
+        let status: boolean = false;
+        // check token status
+        try {
+            status = checkTokenValidityAndExpiration(req.headers.authorization.slice(7));
+        } catch (e) {
+            ws.close(1008, 'Missing Token');
+        }
+        if (!status){
+            console.log(status);
+            ws.close(1008, 'Token expired');
         }
         // if ping from client
         if (req.query.ping){

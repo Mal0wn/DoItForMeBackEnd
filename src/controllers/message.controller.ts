@@ -5,8 +5,8 @@ import { BaseError } from "../errors/api.error";
 const missionController = {
     id: async (req: Request, res: Response, next: NextFunction) => { 
 		try {
-			const message = await messageService.findById(req.params.id)[0];
-			res.json(message);
+			const message = await messageService.findById(req.params.id);
+			res.json(message[0]);
 			return;
 		} catch (error) {
 			next(error);
@@ -38,7 +38,7 @@ const missionController = {
 	},
     findBySender: async (req: Request, res: Response, next: NextFunction) => { 
 		try {
-			const messages = await messageService.findBySender(req.query.id);
+			const messages = await messageService.findBySender(req.params.id);
 			res.json(messages);
 			return;
 		} catch (error) {
@@ -49,8 +49,8 @@ const missionController = {
 	},
 	create: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            await messageService.create(req.body);
-            res.sendStatus(200);
+            const id = await messageService.create(req.body);
+            res.json(id);
             return;
         } catch (error) {
             next(error);

@@ -4,49 +4,76 @@ import { AddressRepository } from "../repository/address.repository";
 
 const addressService = {
 
-	findAll: async () => {
-		return AddressRepository.find()
-	},
-
+    findByID: async (id: string) => {
+        const idAddress = parseInt(id);
+        if (isNaN(idAddress)){
+            throw new Api400Error(`invalid Mission id: ${id}`);
+        }
+        const address = await AddressRepository.find({
+            where : {
+                id: idAddress
+            }
+        });
+        if( address.length < 1){
+            throw new Api404Error(`No Address Found`);
+        }
+        return address;
+    },
 	findByUserID: async (id: string) => {
         const idUser = parseInt(id);
-        if (!isNaN(idUser)){
-            throw new Api400Error(`invalid Mission id ( = \'${id}\')`);
+        if (isNaN(idUser)){
+            throw new Api400Error(`invalid Mission id: ${id}`);
         }
-        return AddressRepository.find({
+        const address = await AddressRepository.find({
             where : { 
                 id_user: idUser
             }
         });
+        if( address.length < 1){
+            throw new Api404Error(`No Address Found`);
+        }
+        return address;
     },
     findByMissionID: async (id: string) => {
         const idMission = parseInt(id); 
-        if (!isNaN(idMission)){
-            throw new Api400Error(`invalid Mission id ( = \'${id}\')`);
+        if (isNaN(idMission)){
+            throw new Api400Error(`invalid Mission id: ${id}`);
         }
-        return AddressRepository.find({
+        const address = await AddressRepository.find({
             where : { 
                 id_mission: idMission
             }
         });
+        if( address.length < 1){
+            throw new Api404Error(`No Address Found`);
+        }
+        return address;
     },
 	create : async (address : Address) => {
-		return AddressRepository.save(address);
+        const test = await AddressRepository.find({
+			where: {
+			    id: address.id
+			}
+		});
+		if( test.length > 0){
+            throw new Api400Error(`Mission Already exist for id: ${address.id}`);
+        }
+		const tmp = await AddressRepository.save(address);
+        return tmp.id;
 	},
     update : async (address : Address) => {
-        const res = await AddressRepository.save(address);
-        if (res.id != address.id){
-            await AddressRepository.delete(res.id);
-            throw new Api400Error(`No existing Address for this id ( = \'${address.id}\')`);
-        }
-        return res;
+        return await AddressRepository.save(address);
 	},
     delete : async ( id: string) => {
         const idAddress = parseInt(id);
-        if (!isNaN(idAddress)){
-            throw new Api400Error(`invalid Address id ( = \'${id}\')`);
+        if (isNaN(idAddress)){
+            throw new Api400Error(`Invalid Address id: ${id}`);
         }
-        return AddressRepository.delete(idAddress);
+        const status = await AddressRepository.delete(idAddress);
+        if( status.affected === 0){
+            throw new Api404Error(`Delete failed, No entry for id: ${id}`);
+        }
+		return;
     }
 }
 

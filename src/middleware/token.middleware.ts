@@ -132,7 +132,6 @@ export function decodeSession(secretKey: string, tokenString: string): DecodeRes
 
 export function checkExpirationStatus(token: Session): ExpirationStatus {
     const now = Date.now();
-    
     if (token.expires > now) return "active";
     const durationRefreshTokenInMs = `${process.env.ALGO_TOKEN_DECODE}`;
     const afterExpiration = token.expires + +durationRefreshTokenInMs;
@@ -140,4 +139,14 @@ export function checkExpirationStatus(token: Session): ExpirationStatus {
     if (afterExpiration > now) return "grace";
 
     return "expired";
+}
+
+export function checkTokenValidityAndExpiration(token: string): boolean {
+    const tmp = ( decodeSession(`${process.env.SECRET_KEY_JWT}`, token) as any);
+    if (tmp.hasOwnProperty('session')){
+        if ( checkExpirationStatus(tmp.session) != "expired"){
+            return true;
+        }
+    }
+    return false;
 }

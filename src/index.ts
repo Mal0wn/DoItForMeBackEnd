@@ -10,6 +10,7 @@ import { securityJWTMiddleware } from './middleware/token.middleware';
 import { errorMiddleware } from './middleware/error.middleware';
 import * as path from "path";
 import { wsMiddleware } from './middleware/ws.middleware';
+import messageRouter from './routes/message.route';
 
 dataSource.initialize()
   .then(() => {
@@ -29,18 +30,20 @@ app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json());
 //Routers Redirection
 app.use("/login", authenticationRouter);
-app.use(`/user`, securityJWTMiddleware, userRouter);
 // Using the securityJWTMiddleware middleware to check if the user is authenticated before accessingthe missionRouter. 
+app.use(`/user`, securityJWTMiddleware, userRouter);
 app.use(`/mission`, securityJWTMiddleware, missionRouter);
+app.use(`/message`, securityJWTMiddleware, messageRouter);
 app.use(errorMiddleware);
-//C:\Users\jblan\Documents\dev\projet3\DoItForMeBackEnd\src\wsTest\index.html
+
+//page test websocket
 app.get("/client", (req: any, res: any) => {
   res.sendFile(path.resolve("./src/wsTest/index.html"));
 });
 app.ws(`/ws`, wsMiddleware);
 app.ws(`/test`, (ws, req) => {
   ws.onopen = () => {
-    
+
   }
   ws.on('message', ()=>{
     console.log(appWs.getWss().clients)

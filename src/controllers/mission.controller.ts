@@ -17,8 +17,8 @@ const missionController = {
 	},
 	create: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            await missionService.create(req.body);
-            res.sendStatus(200);
+            const id = await missionService.create(req.body);
+            res.json(id);
             return;
         } catch (error) {
             next(error);
@@ -48,8 +48,8 @@ const missionController = {
     },
 	id: async(req: Request, res: Response, next: NextFunction) => { 
 		try {
-		const missions = await missionService.findById(req.params.id)
-		res.json(missions);
+		const mission = await missionService.findById(req.params.id)
+		res.json(mission[0]);
 		} catch(error) {
 			next(error);
 			return;
