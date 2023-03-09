@@ -115,7 +115,6 @@ const userController = {
             if (req.body.id !== user.id) {
                 return res.status(401).json({ message: 'Unauthorized' });
             }
-            console.log("\n" + JSON.stringify(req.body) + "\n");
             
             // Update the user
             const userUpdated = await userService.updateUser(req.body);
@@ -124,7 +123,7 @@ const userController = {
 
         } catch (error) {
             next(error);
-            return;
+            return res.status(500).json({ message: 'Internal server error' });
         }
     },
     /**
@@ -163,7 +162,7 @@ const userController = {
      * @param phrase // "DELETE MY ACCOUNT" allows you to confirm the intentional deletion of the account
      * @returns status code 200 if the user is deleted
      */
-    deleteUser: async (req: Request, res: Response, next: NextFunction) => {
+    deleteCurrentUser: async (req: Request, res: Response, next: NextFunction) => {
         try {
             // Check if token is valid
             let currentUserId = await userController.checkToken(req, res, next);
