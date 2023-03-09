@@ -11,7 +11,7 @@ export function wsMiddleware(ws: any, req: any) {
         let status: boolean = false;
         // check token status
         try {
-            status = checkTokenValidityAndExpiration(req.headers.authorization.slice(7));
+            status = checkTokenValidityAndExpiration(req.headers['sec-websocket-key'].slice(7));
         } catch (e) {
             ws.close(1008, 'Missing Token');
         }

@@ -39,20 +39,8 @@ app.use(`/address`, securityJWTMiddleware, addressRouter);
 
 // error handling , must be .use as last
 app.use(errorMiddleware);
-
-//page test websocket
-app.get("/client", (req: any, res: any) => {
-  res.sendFile(path.resolve("./src/wsTest/index.html"));
-});
+// websocket route ( not HTTP method)
 app.ws(`/ws`, wsMiddleware);
-app.ws(`/test`, (ws, req) => {
-  ws.onopen = () => {
-
-  }
-  ws.on('message', ()=>{
-    console.log(appWs.getWss().clients)
-  })
-});
 
 //Port App Management
 const PORT = process.env.APP_PORT || 8000;
