@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne } from "typeorm"
 import { Address } from "./address.model";
+import { Message } from "./message.model";
 import { Mission } from "./mission.model";
 
 @Entity()
@@ -39,4 +40,10 @@ export class User {
 
     @OneToMany(() => Address, (address) => address.user)
     address: Address[];
+
+    @OneToMany(() => Message, (message) => message.receiver)
+    received: Message[];
+
+    @OneToMany(() => Message, (message) => message.sender)
+    sent: Message[];
 }

@@ -20,19 +20,19 @@ const httpStatusCodes = {
 }
 
 export class Api400Error extends BaseError {
-    constructor(name: string) {
-        super(name, httpStatusCodes.BAD_REQUEST, true, 'Not Found.');
+    constructor(message: string) {
+        super('Bad Request', httpStatusCodes.BAD_REQUEST, true, message);
     }
 }
 
 export class Api404Error extends BaseError {
-    constructor(name: string) {
-        super(name, httpStatusCodes.NOT_FOUND, true, 'Not Found.');
+    constructor(message: string) {
+        super('Not Found', httpStatusCodes.NOT_FOUND, true, message);
     }
 }
 
 export class Api500Error extends BaseError {
-    constructor(name: string) {
-        super(name, httpStatusCodes.INTERNAL_SERVER, true, 'Not Found.');
+    constructor(message: string) {
+        super('Internal Server Error', httpStatusCodes.INTERNAL_SERVER, true, message);
     }
 }

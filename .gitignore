@@ -1,6 +1,9 @@
-dist/
+/node_modules
+/dist
+/build
+package-lock.json
+.env
+/data/testData.sql
 node_modules/
 npm-debug.log
 yarn-error.log
-.env
-package-lock.json
