@@ -11,6 +11,10 @@ tags:
     description: Everything about mission
   - name: user
     description: Operations about user
+  - name: address
+    description: Address available URLs
+  - name: message
+    description: Message available URLs
 paths:
   /mission:
     put:
@@ -56,18 +60,12 @@ paths:
       tags:
         - mission
       summary: Add a new mission 
-      description: Add a new mission 
+      description: Add a new mission , returns id
       operationId: create
       requestBody:
         description: Create a new mission
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/Mission'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Mission'
-          application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/Mission'
         required: true
@@ -78,10 +76,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Mission'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Mission'
-        '405':
+        '400':
           description: Invalid input
       security:
         - petstore_auth:
@@ -116,18 +111,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Mission'          
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Mission'
         '400':
           description: Invalid status value
       security:
         - petstore_auth:
             - write:missions
             - read:missions
-
   /mission/{missionId}:
     get:
       tags:
@@ -157,11 +146,39 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Mission not found
+    delete:
+      tags:
+        - mission
+      summary: Remove a mission 
+      description: Remove a mission 
+      operationId: delete
+      requestBody:
+        description: Delete an existing mission
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Mission'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid ID supplied
+      security:
+        - petstore_auth:
+            - write:missions
+            - read:missions
   /mission/{missionId}/uploadImage:
     post:
       tags:
         - mission
-      summary: uploads an image
+      summary: uploads an image (mais autant utiliser update ?)
       description: ''
       operationId: uploadFile
       parameters:
@@ -191,6 +208,141 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
+  /mission/search:
+    get:
+      tags:
+        - mission
+      summary: search missions in defined radius / position
+      description: 'return an array of Mission'
+      operationId: searchMission
+      parameters:
+          - in: query
+            name: lat
+            required: true
+            schema:
+              type: float
+            description: current latitude of user
+          - in: query
+            name: long
+            required: true
+            schema:
+              type: float
+            description: current longitude of user
+          - in: query
+            name: radius
+            required: true
+            schema:
+              type: integer
+            description: radius to search in kilometers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Mission'          
+        '400':
+          description: Invalid parameters supplied
+        '404':
+          description: No Mission Found for current parameters
+  /mission/search/price:
+    get:
+      tags:
+        - mission
+      summary: search missions in defined radius / position
+      description: 'return an array of Mission'
+      operationId: searchMission
+      parameters:
+          - in: query
+            name: lat
+            required: true
+            schema:
+              type: float
+            description: current latitude of user
+          - in: query
+            name: long
+            required: true
+            schema:
+              type: float
+            description: current longitude of user
+          - in: query
+            name: radius
+            required: true
+            schema:
+              type: integer
+            description: radius to search in kilometers
+          - in: query
+            name: max
+            required: true
+            schema:
+              type: integer
+            description: maximum price
+          - in: query
+            name: min
+            required: true
+            schema:
+              type: integer
+            description: minimum price
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Mission'          
+        '400':
+          description: Invalid parameters supplied
+        '404':
+          description: No Mission Found for current parameters
+  /mission/search/string:
+    get:
+      tags:
+        - mission
+      summary: search missions in defined radius / position
+      description: 'return an array of Mission'
+      operationId: searchMission
+      parameters:
+          - in: query
+            name: lat
+            required: true
+            schema:
+              type: float
+            description: current latitude of user
+          - in: query
+            name: long
+            required: true
+            schema:
+              type: float
+            description: current longitude of user
+          - in: query
+            name: radius
+            required: true
+            schema:
+              type: integer
+            description: radius to search in kilometers
+          - in: query
+            name: string
+            required: true
+            schema:
+              type: string
+            description: keyword to find in mission title
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Mission'          
+        '400':
+          description: Invalid parameters supplied
+        '404':
+          description: No Mission Found for current parameters
   /user:
     post:
       tags:
@@ -204,10 +356,23 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/User'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/User'
-          application/x-www-form-urlencoded:
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags:
+        - user
+      summary: Update user
+      description: This can only be done by the logged in user.
+      operationId: update
+      requestBody:
+        description: Updated user object
+        content:
+          application/json:
             schema:
               $ref: '#/components/schemas/User'
       responses:
@@ -217,9 +382,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-            application/xml:
+  /user/{userId}:
+    get:
+      tags:
+        - user
+      summary: Find specific User
+      description: Find a User
+      operationId: findid
+      parameters:
+        - name: userId
+          in: path
+          description: ID of target User
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: full
+          in: query
+          description: if full = 1 select User with full cascade items
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'          
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: No Conversations for current User 
   /user/login:
     get:
       tags:
@@ -274,17 +470,448 @@ paths:
       responses:
         default:
           description: successful operation
+  /user/conversation/{userId}:
+    get:
+      tags:
+        - user
+      summary: Find all users you have a conversation With
+      description: Find all users you have a conversation With for given ID excluding the User provided
+      operationId: findConversationsById
+      parameters:
+        - name: userId
+          in: path
+          description: ID of target User
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'          
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: No Conversations for current User
+  /user/conversation/mission/:
+    get:
+      tags:
+        - user
+      summary: Find all Users (with the conversation) that sent you a message for given Mission
+      description: Find all Users that sent you a message for given User & Mission ID (excluding the UserID provided)
+      operationId: findMissionConversationsById
+      parameters:
+        - name: userId
+          in: query
+          description: ID of target User
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: missionId
+          in: query
+          description: ID of target Mission
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'          
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: No Conversations for current User
+  /address:
+    post:
+      tags:
+        - address
+      summary: Create Address
+      description: This can only be done by the logged in user.
+      operationId: create
+      requestBody:
+        description: Created Address object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+        '400':
+          description: Invalid input
+        '404':
+          description: User Not Found
+    put:
+      tags:
+        - address
+      summary: Update Address
+      description: This can only be done by the logged in user.
+      operationId: update
+      requestBody:
+        description: Updated Address object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Address'
+        '400':
+          description: Invalid input
+        '404':
+          description: User Not Found
+  /address/{id}:
+    delete:
+      tags:
+        - address
+      summary: Delete Address
+      description: Delete Address
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          description: ID of Address to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Address Not Found
+      security:
+        - petstore_auth:
+            - write:address
+            - read:address
+    get:
+      tags:
+        - address
+      summary: Find an Address by id
+      description: return a simple Address
+      operationId: findid
+      parameters:
+        - name: id
+          in: path
+          description: ID of Address to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Address'
+        '400':
+          description: Invalid input
+        '404':
+          description: User Not Found
+  /address/mission/{id}:
+    get:
+      tags:
+        - address
+      summary: Find an Address by Mission id
+      description: return a simple Address
+      operationId: findmissionid
+      parameters:
+        - name: id
+          in: path
+          description: target Mission id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Address'
+        '400':
+          description: Invalid input
+        '404':
+          description: User Not Found
+  /address/user/{id}:
+    get:
+      tags:
+        - address
+      summary: Find an Address by User id
+      description: return a simple Address
+      operationId: finduserid
+      parameters:
+        - name: id
+          in: path
+          description: target User id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Address'
+        '400':
+          description: Invalid input
+        '404':
+          description: User Not Found
+  /message:
+    post:
+      tags:
+        - message
+      summary: Create Message
+      description: This can only be done by the logged in user.
+      operationId: create
+      requestBody:
+        description: Created Message object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: integer
+                example: 10
+        '400':
+          description: Invalid input
+  /message/{id}:
+    get:
+      tags:
+        - message
+      summary: Find Message
+      description: This can only be done by the logged in user.
+      operationId: findid
+      parameters:
+        - name: id
+          in: path
+          description: ID of target Message
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        default:
+          description: message Item
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid input
+        '404':
+          description: Message id not found
+    delete:
+      tags:
+        - message
+      summary: Delete Message
+      description: This can only be done by the logged in user.
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          description: ID of target Message
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        default:
+          description: success
+        '400':
+          description: Invalid input
+        '404':
+          description: Message id not found
+  /message/mission/{id}:
+    get:
+      tags:
+        - message
+      summary: Find Messages
+      description: Find All message for mission id
+      operationId: findformissionid
+      parameters:
+        - name: id
+          in: path
+          description: ID of target Mission
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        default:
+          description: message Item
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid input
+        '404':
+          description: No Message found
+  /message/user/{id}:
+    get:
+      tags:
+        - message
+      summary: Find Messages
+      description: Find All message for user id
+      operationId: findforuserid
+      parameters:
+        - name: id
+          in: path
+          description: ID of target User
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        default:
+          description: message Item
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid input
+        '404':
+          description: No Message found
+  /message/conversation:
+    get:
+      tags:
+        - message
+      summary: Find Messages
+      description: Find All message between 2 users for given mission id
+      operationId: findconversation
+      parameters:
+        - name: uid1
+          in: query
+          description: ID of target User 1
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: uid2
+          in: query
+          description: ID of target User 2
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: mission
+          in: query
+          description: ID of target Mission
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        default:
+          description: message Item
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid input
+        '404':
+          description: No Message found
 components:
   schemas:
-    Address:
+    Message:
       required:
+        - id
         - number
         - street
         - zip_code
         - city
         - country  
+        - complement
+        - latitude
+        - longitude
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        time : 
+          type : Date 
+          example : '2023-02-18 00:59:59' 
+        message:
+          type: string
+          example: wesh alors
+        id_send:
+          type: integer
+          format: int64
+          example: 10
+        id_receive:
+          type: integer
+          format: int64
+          example: 10
+        id_mission:
+          type: integer
+          format: int64
+          example: 10
+      xml:
+        name: message
+    Address:
+      required:
+        - id
+        - number
+        - street
+        - zip_code
+        - city
+        - country  
+        - complement
+        - latitude
+        - longitude
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
         number : 
           type : number 
           example : '403' 
@@ -303,6 +930,12 @@ components:
         zip_code:
           type: string
           example: '94301'
+        latitude: 
+          type: float
+          example: '89.99999'
+        longitude:
+          type: float
+          example: '179.99999'
       xml:
         name: address
     User:
@@ -347,14 +980,14 @@ components:
           name: user
     Mission:
       required:
-        - name
+        - id
+        - picture
         - status
         - price
         - title 
         - description
         - creation_date
         - id_create 
-        - id_make 
       type: object
       properties:
         id:
