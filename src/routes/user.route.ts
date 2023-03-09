@@ -29,17 +29,20 @@ userRouter
   .get(userController.allConv);
 
 userRouter
+  .route('/currentUser/getCurrentUser')
+  .get(userController.getCurrentUser)
+userRouter
+  .route('/currentUser/updateCurrentUser')
+  .put(userController.updateCurrentUser);
+userRouter
+  .route('/currentUser/updatePassword')
+  .put(userController.updatePassword);
+userRouter
+  .route('/currentUser/deleteCurrentUser')
+  .delete(userController.deleteCurrentUser);
+  
+userRouter  
   .route('/:id')
   .get(userController.id);
-
-userRouter
-    .route('/currentUser/me')
-    .get(userController.getCurrentUser)
-    .put(userController.updateCurrentUser)
-    .delete(userController.deleteUser);
-
-userRouter
-    .route('/currentUser/updatePassword')
-    .put(userController.updatePassword);
 
 export default userRouter;

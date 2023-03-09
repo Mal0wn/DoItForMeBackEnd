@@ -1,6 +1,6 @@
 # Do It 4 Me - BackEnd
 
-## Technology stack
+## Technologies
 
   - NodeJs 17.4.0
   - TypeScrypt 4.8.4	
@@ -23,14 +23,25 @@ npm install
 Create .env file :
 
 ```
-To do
+DB_HOST = 'localhost'
+DB_USER = 'username'
+DB_PASSWORD = 'password'
+DB_PORT = '3306'
+DB_NAME = 'database'
+DB_CONNECTION_LIMIT = '4000'
+APP_PORT = '3000'
+
+SECRET_KEY_JWT = 'yourSecretKey'
+ALGO_TOKEN_DECODE = 'HS512'
+TOKEN_DURATION = 7200000
+REFRESH_TOKEN_DURATION_IN_MS = 10800000
 ```
 
 ## Database installation
 Create MySql database named like your DB_NAME in .env file.
 
 follow the link to find the sql file ==>
-[data.sql](./src/data)
+<a href="./src/data" target="_blank">data.sql</a>
 
 run it in your mysql database
 
@@ -48,7 +59,13 @@ Use Postman to create your first user
 ````Json
 {
   "firstname": "John",
-  To do
+  "lastname": "Doe",
+  "email": "johndoe@example.com",
+  "password": "yourPassword",
+  "picture": "image.png", //Can be null
+  "birthday": "1990-03-01",
+  "role": "admin",
+  "phone": "0600000000"
 }
 ````
 

@@ -3,6 +3,7 @@ import expressWs from 'express-ws';
 import { dataSource } from "./dataSource";
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
+const cors = require('cors');
 import userRouter from './routes/user.route';
 import missionRouter from './routes/mission.route';
 import authenticationRouter from './routes/authentication.route';
@@ -29,6 +30,10 @@ app.locals.notifications = [];
 const swaggerDocument = YAML.load('./swagger.yaml');
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json());
+
+//CORS
+app.use(cors());
+
 //Routers Redirection
 app.use("/login", authenticationRouter);
 // Using the securityJWTMiddleware middleware to check if the user is authenticated before accessingthe missionRouter. 
