@@ -13,21 +13,24 @@ userRouter
   );
 
 userRouter
-    .route('/name/:firstname/:lastname')
-    .get(userController.getByName);
+  .route('/name/:firstname/:lastname')
+  .get(userController.getByName);
 
 userRouter
-    .route('/:id')
-    .get(userController.id);
+  .route('/:id')
+  .get(userController.id);
 
 userRouter
-    .route('/currentUser/me')
-    .get(userController.getCurrentUser)
-    .put(userController.updateCurrentUser)
-    .delete(userController.deleteUser);
-
+  .route('/currentUser/getCurrentUser')
+  .get(userController.getCurrentUser)
 userRouter
-    .route('/currentUser/updatePassword')
-    .put(userController.updatePassword);
+  .route('/currentUser/updateCurrentUser')
+  .put(userController.updateCurrentUser);
+userRouter
+  .route('/currentUser/updatePassword')
+  .put(userController.updatePassword);
+userRouter
+  .route('/currentUser/deleteCurrentUser')
+  .delete(userController.deleteCurrentUser);
 
 export default userRouter;
