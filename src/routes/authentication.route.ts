@@ -5,5 +5,6 @@ const authenticationRouter = express.Router();
 
 //Only one route for the connexion
 authenticationRouter.post("/",authenticationController.connexion);
+authenticationRouter.post("/inscription",authenticationController.inscription);
 
 export default authenticationRouter
