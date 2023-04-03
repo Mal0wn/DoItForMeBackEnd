@@ -9,6 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@types/express-ws": "^3.0.1",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
     "cookie-parser": "~1.4.4",
@@ -16,6 +17,7 @@
     "debug": "~2.6.9",
     "dotenv": "^16.0.3",
     "express": "~4.16.1",
+    "express-ws": "^5.0.2",
     "fs-extra": "^10.1.0",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",

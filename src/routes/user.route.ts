@@ -17,8 +17,16 @@ userRouter
   .get(userController.getByName);
 
 userRouter
-  .route('/:id')
-  .get(userController.id);
+  .route('/created/:id')
+  .get(userController.idCreator);
+
+userRouter
+  .route('/conversation/mission')
+  .get(userController.missionConv);
+
+userRouter
+  .route('/conversation/:id')
+  .get(userController.allConv);
 
 userRouter
   .route('/currentUser/getCurrentUser')
@@ -32,5 +40,9 @@ userRouter
 userRouter
   .route('/currentUser/deleteCurrentUser')
   .delete(userController.deleteCurrentUser);
+  
+userRouter  
+  .route('/:id')
+  .get(userController.id);
 
 export default userRouter;

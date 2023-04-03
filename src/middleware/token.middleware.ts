@@ -77,7 +77,7 @@ import { encode, TAlgorithm, decode } from "jwt-simple";
  * @returns An object with a token, issued, and expires.
  */
 export function encodeSession(secretKey: string, partialSession: PartialSession): EncodeResult {
-    const algorithm: TAlgorithm = `${process.env.ALGO_TOKEN_DECODE}`;
+    const algorithm: TAlgorithm | string= `${process.env.ALGO_TOKEN_DECODE}`;
     const issued : number = Date.now();
     const tokenDurationInMs =  `${process.env.TOKEN_DURATION}`;
     const expires : number = issued + +tokenDurationInMs;
@@ -95,7 +95,7 @@ export function encodeSession(secretKey: string, partialSession: PartialSession)
 }
 
 export function decodeSession(secretKey: string, tokenString: string): DecodeResult {
-    const algorithm: TAlgorithm = `${process.env.ALGO_TOKEN_DECODE}`;
+    const algorithm: TAlgorithm | string= `${process.env.ALGO_TOKEN_DECODE}`;
     let result: Session;
 
     try {
@@ -132,7 +132,6 @@ export function decodeSession(secretKey: string, tokenString: string): DecodeRes
 
 export function checkExpirationStatus(token: Session): ExpirationStatus {
     const now = Date.now();
-    
     if (token.expires > now) return "active";
     const durationRefreshTokenInMs = `${process.env.ALGO_TOKEN_DECODE}`;
     const afterExpiration = token.expires + +durationRefreshTokenInMs;
@@ -140,4 +139,14 @@ export function checkExpirationStatus(token: Session): ExpirationStatus {
     if (afterExpiration > now) return "grace";
 
     return "expired";
+}
+
+export function checkTokenValidityAndExpiration(token: string): boolean {
+    const tmp = ( decodeSession(`${process.env.SECRET_KEY_JWT}`, token) as any);
+    if (tmp.hasOwnProperty('session')){
+        if ( checkExpirationStatus(tmp.session) != "expired"){
+            return true;
+        }
+    }
+    return false;
 }

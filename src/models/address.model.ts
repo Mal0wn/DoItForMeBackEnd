@@ -25,6 +25,12 @@ export class Address {
 	@Column({ length: 250, nullable: true })
     complement: string;
 
+    @Column({ type: 'decimal', precision: 10, scale: 6 })// difference de 2.6cm par 0.000001 degrés
+    latitude: number;
+
+    @Column({ type: 'decimal', precision: 10, scale: 6 })
+    longitude: number
+
     @Column({ nullable: true})
     id_user: number;
 
