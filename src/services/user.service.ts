@@ -91,6 +91,10 @@ const userService = {
                 id: userId
             },
             relations: {
+                missionCreated: true,
+                missionMade: true,
+                received: true,
+                sent: true,
                 address: true
             }
         });
