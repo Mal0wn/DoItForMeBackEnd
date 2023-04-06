@@ -3,6 +3,8 @@ import { Api400Error, Api404Error } from "../errors/api.error";
 import { User } from "../models/user.model";
 import { UserRepository } from "../repository/user.repository";
 import bcrypt from "bcrypt";
+import { Address } from "../models/address.model";
+import { AddressRepository } from "../repository/address.repository";
 
 // https://typeorm.io/find-options
 const userService = {
@@ -169,18 +171,30 @@ const userService = {
             dbUser.picture = user.picture;
             dbUser.birthday = user.birthday;
             dbUser.phone = user.phone;
-
-            // Update address DO NOT WORK ACTUALLY
-            dbUser.address[0].number = user.address[0].number;
-            dbUser.address[0].street = user.address[0].street;
-            dbUser.address[0].zip_code = user.address[0].zip_code;
-            dbUser.address[0].city = user.address[0].city;
-            dbUser.address[0].country = user.address[0].country;
-            dbUser.address[0].complement = user.address[0].complement;
-
-            console.log(dbUser.address[0]);
-            console.log(user.address[0]);
             
+            // If user has no address, create one and save it else update it
+            if (dbUser.address.length === 0) {
+                const address = new Address();
+                address.number = user.address[0].number;
+                address.street = user.address[0].street;
+                address.zip_code = user.address[0].zip_code;
+                address.city = user.address[0].city;
+                address.country = user.address[0].country;
+                address.complement = user.address[0].complement;
+                address.id_user = user.id;
+                dbUser.address = [address];
+
+                AddressRepository.save(dbUser.address);
+            } else {                
+                dbUser.address[0].number = user.address[0].number;
+                dbUser.address[0].street = user.address[0].street;
+                dbUser.address[0].zip_code = user.address[0].zip_code;
+                dbUser.address[0].city = user.address[0].city;
+                dbUser.address[0].country = user.address[0].country;
+                dbUser.address[0].complement = user.address[0].complement;
+
+                AddressRepository.save(dbUser.address[0]);
+            }
             
             // Save user in database
             return UserRepository.save(dbUser);
