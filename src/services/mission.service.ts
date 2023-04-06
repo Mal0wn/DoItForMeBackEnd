@@ -3,6 +3,9 @@ import { Mission } from "../models/mission.model";
 import { MissionRepository } from "../repository/mission.repository";
 
 const missionService = {
+    findAll:async()=>{
+        return await MissionRepository.find();
+    },
 	findById: async (missionId : string) => {
 		const id = parseInt(missionId);
 		if( isNaN(id)){

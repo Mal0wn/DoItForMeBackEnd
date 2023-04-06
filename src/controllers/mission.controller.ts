@@ -6,7 +6,7 @@ const missionController = {
 
 	getAll: async (req: Request, res: Response, next: NextFunction) => { 
 		try {
-			const missions = await missionService.findAllByTitle(req.params.title);
+			const missions = await missionService.findAll(req.params.title);
 			res.json(missions);
 			return;
 		} catch (error) {
