@@ -135,6 +135,70 @@ CREATE TABLE report(
     ,CONSTRAINT report_mission_FK FOREIGN KEY (id_mission) REFERENCES mission(id)
 )ENGINE=InnoDB;
 
+#------------------------------------------------------------
+# PROCEDURES Stockées 
+#------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+-- Delete une mission après 1 an 
+CREATE PROCEDURE deleteMissionAfterOneYear ()
+AS
+BEGIN
+    DECLARE @date_actuelle DATETIME
+    SET @date_actuelle = GETDATE()
+
+    DELETE FROM mission WHERE DATEDIFF(YEAR, creation_date, @date_actuelle) >= 1
+END
+
+--------------------------------------------------------------------------------------
+-- Appliquer un rabais sur les missions d'un user donné
+CREATE PROCEDURE applyDiscountPrice (
+    IN p_user_id INT,
+    IN p_rabais INT
+)
+AS
+BEGIN
+    UPDATE mission 
+    SET price = price * (1 - p_rabais/100) 
+    WHERE id_create = p_user_id ;
+END
+--------------------------------------------------------------------------------------
+-- Delete les messages en rapport avec une mission qui a été supprimée
+CREATE PROCEDURE deleteMessageWithoutMission (
+    IN p_user1_id INT,
+    IN p_user2_id INT
+)
+AS
+BEGIN
+    DECLARE mission_exists INT;
+    DECLARE message_count INT;
+
+    -- Vérifier si une mission existe entre deux users
+    SELECT COUNT(*) INTO mission_exists
+    FROM mission
+    WHERE (id_create = p_user1_id AND id_make = p_user2_id)
+        OR (id_create = p_user2_id AND id_make = p_user1_id);
+    
+    -- Supprimer les messages si aucune mission n'existe
+    IF mission_exists = 0 THEN
+        DELETE FROM message 
+        WHERE (id_send = p_user1_id AND id_receive = p_user2_id)
+            OR (id_send = p_user2_id AND id_receive = p_user1_id);
+    END IF;
+    
+    -- Compter le nombre de messages supprimés
+    SELECT ROW_COUNT() INTO message_count;
+    
+    -- Afficher le résultat
+    SELECT CONCAT(message_count, ' messages ont été supprimés.') AS result;
+END
+
+--------------------------------------------------------------------------------------
+
+
+
+
+
 
 
 
