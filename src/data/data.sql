@@ -275,8 +275,33 @@ BEGIN
 
 END;
 
+#------------------------------------------------------------
+# TRIGGER 
+#------------------------------------------------------------
+-- Lie l'adresse de l'user a la mission que ce meme user crée
+CREATE TRIGGER addMissionAdressUser
+AFTER INSERT ON Mission
+FOR EACH ROW
+BEGIN
+  UPDATE Mission
+  SET address = (
+    SELECT address FROM User
+    WHERE id = NEW.user_id
+  )
+  WHERE id = NEW.id;
+END;
 
-
+-- Empeche la suppression de l'user si la mission est encore active 
+CREATE TRIGGER notDeleteUserIfMissionPending
+BEFORE DELETE ON users
+FOR EACH ROW
+BEGIN
+    DECLARE count_missions INT;
+    SELECT COUNT(*) INTO count_missions FROM missions WHERE missions.user_id = OLD.id AND missions.status IN ('In Progress', 'Pending', 'notMake');
+    IF count_missions > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot delete user with active missions';
+    END IF;
+END;
 
 
 
