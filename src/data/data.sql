@@ -135,6 +135,19 @@ CREATE TABLE report(
     ,CONSTRAINT report_mission_FK FOREIGN KEY (id_mission) REFERENCES mission(id)
 )ENGINE=InnoDB;
 
+
+-- Création de la table
+CREATE TABLE forbiddenWord (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  word VARCHAR(50) NOT NULL
+);
+
+-- Insertion de plusieurs insultes
+INSERT INTO forbiddenWord (word)
+VALUES 
+  ('merde'),('connard'),('salope'),('putain'),('enculé'),('chiasse'),('cul'),('bite'),('nique'),('trouduc'),('pétasse'),('enfoiré'),('bordel'),('crétin'),
+  ('pouffiasse'),('taré'),('salaud'),('gueule'),('crotte'),('imbécile'),('pénis'),('fion'),('clito'),('couillon'),('fdp'),('merdique');
+
 #------------------------------------------------------------
 # PROCEDURES Stockées 
 #------------------------------------------------------------
@@ -194,7 +207,34 @@ BEGIN
 END
 
 --------------------------------------------------------------------------------------
-
+-- Filtre les messages envoyés si il contient un mot interdit 
+DELIMITER $$
+CREATE PROCEDURE check_message(IN message_content VARCHAR(250), IN sender_id INT, IN receiver_id INT, IN mission_id INT)
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE word VARCHAR(50);
+    DECLARE words_cursor CURSOR FOR SELECT word FROM forbiddenWord;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    
+    OPEN words_cursor;
+    
+    read_loop: LOOP
+        FETCH words_cursor INTO word;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        
+        IF LOCATE(word, message_content) > 0 THEN
+            INSERT INTO report (date, reason, id_endure, id_apply, id_mission)
+            VALUES (NOW(), 'Mot interdit envoyé', sender_id, receiver_id, mission_id);
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Le message contient un mot interdit.';
+        END IF;
+    END LOOP;
+    
+    CLOSE words_cursor;
+    
+END $$
+DELIMITER ;
 
 
 
