@@ -237,6 +237,45 @@ END $$
 DELIMITER ;
 
 
+--------------------------------------------------------------------------------------
+-- Applique un ban automatique si un user a au moins 5 report
+CREATE PROCEDURE apply_ban()
+BEGIN
+    DECLARE user_id INT;
+    DECLARE report_count INT;
+
+    -- Check for users with 5 or more reports
+    DECLARE users_to_ban CURSOR FOR
+    SELECT id, COUNT(*) as report_count
+    FROM report
+    WHERE id_mission IS NULL
+    GROUP BY id
+    HAVING COUNT(*) >= 5;
+
+    OPEN users_to_ban;
+    FETCH users_to_ban INTO user_id, report_count;
+    WHILE (NOT (user_id IS NULL)) DO
+        -- Add user to ban table
+        INSERT INTO ban (reason, start_date, end_date, id_suffer, id_apply)
+        VALUES ('Multiple reports received', NOW(), NOW() + INTERVAL 1 MONTH, user_id, 1);
+
+        FETCH users_to_ban INTO user_id, report_count;
+    END WHILE;
+
+    CLOSE users_to_ban;
+
+    -- Add robot admin user
+    INSERT INTO user (firstname, lastname, email, password, role, phone)
+    VALUES ('Admin', 'Robot', 'admin@robot.com', SHA2('admin123'), 'admin', 123456789);
+
+    -- Grant admin privileges to robot user
+    UPDATE user
+    SET role = 'admin'
+    WHERE id = 1;
+
+END;
+
+
 
 
 
