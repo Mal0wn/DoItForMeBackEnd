@@ -152,7 +152,6 @@ VALUES
 # PROCEDURES Stockées 
 #------------------------------------------------------------
 
---------------------------------------------------------------------------------------
 -- Delete une mission après 1 an 
 CREATE PROCEDURE deleteMissionAfterOneYear ()
 AS
@@ -163,7 +162,6 @@ BEGIN
     DELETE FROM mission WHERE DATEDIFF(YEAR, creation_date, @date_actuelle) >= 1
 END
 
---------------------------------------------------------------------------------------
 -- Appliquer un rabais sur les missions d'un user donné
 CREATE PROCEDURE applyDiscountPrice (
     IN p_user_id INT,
@@ -175,7 +173,7 @@ BEGIN
     SET price = price * (1 - p_rabais/100) 
     WHERE id_create = p_user_id ;
 END
---------------------------------------------------------------------------------------
+
 -- Delete les messages en rapport avec une mission qui a été supprimée
 CREATE PROCEDURE deleteMessageWithoutMission (
     IN p_user1_id INT,
@@ -206,7 +204,7 @@ BEGIN
     SELECT CONCAT(message_count, ' messages ont été supprimés.') AS result;
 END
 
---------------------------------------------------------------------------------------
+
 -- Filtre les messages envoyés si il contient un mot interdit 
 DELIMITER $$
 CREATE PROCEDURE filterMessage(IN message_content VARCHAR(250), IN sender_id INT, IN receiver_id INT, IN mission_id INT)
@@ -237,7 +235,7 @@ END $$
 DELIMITER ;
 
 
---------------------------------------------------------------------------------------
+ 
 -- Applique un ban automatique si un user a au moins 5 report
 CREATE PROCEDURE applyBan()
 BEGIN
