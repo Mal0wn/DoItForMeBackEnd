@@ -209,7 +209,7 @@ END
 --------------------------------------------------------------------------------------
 -- Filtre les messages envoyés si il contient un mot interdit 
 DELIMITER $$
-CREATE PROCEDURE check_message(IN message_content VARCHAR(250), IN sender_id INT, IN receiver_id INT, IN mission_id INT)
+CREATE PROCEDURE filterMessage(IN message_content VARCHAR(250), IN sender_id INT, IN receiver_id INT, IN mission_id INT)
 BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE word VARCHAR(50);
@@ -239,7 +239,7 @@ DELIMITER ;
 
 --------------------------------------------------------------------------------------
 -- Applique un ban automatique si un user a au moins 5 report
-CREATE PROCEDURE apply_ban()
+CREATE PROCEDURE applyBan()
 BEGIN
     DECLARE user_id INT;
     DECLARE report_count INT;
