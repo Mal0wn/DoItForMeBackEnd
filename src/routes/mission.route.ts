@@ -4,9 +4,10 @@ const missionRouter = express.Router();
 
 missionRouter
 	.route("/")
-	.get(missionController.getAll)
+	.get(missionController.getAllWithUser)
 	.put(missionController.update)
 	.post(missionController.create);
+
 
 missionRouter 
 	.route('/search')
