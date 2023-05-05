@@ -5,6 +5,8 @@ import { UserRepository } from "../repository/user.repository";
 import bcrypt from "bcrypt";
 import { Address } from "../models/address.model";
 import { AddressRepository } from "../repository/address.repository";
+import { MissionRepository } from "../repository/mission.repository";
+import { log } from "console";
 
 // https://typeorm.io/find-options
 const userService = {
@@ -93,7 +95,11 @@ const userService = {
                 id: userId
             },
             relations: {
-                address: true
+                address: true,
+                missionCreated: true,
+                missionMade: true,
+                received: true,
+                sent: true
             }
         });
     },
@@ -219,19 +225,67 @@ const userService = {
 
         return dbUser;
     },
+    deleteUserRelationship: async (currentUserId: number) => {
+        // Get user from database
+        let dbUser = UserRepository.findOne({
+            where: {
+                id: currentUserId
+            },
+            relations: {
+                missionCreated: true,
+                missionMade: true,
+                received: true,
+                sent: true,
+                address: true
+            }
+        }).then(async (dbUser) => {
+            // check if user exist in database
+            if (!dbUser){
+                throw new Api404Error(`User with id: ${currentUserId} not found.`);
+            }
+            try {
+                // Can't delete user if he has mission in progress
+                if (dbUser.missionMade.length > 0) {
+                    throw new Api400Error(`User has mission in progress.`);
+                }
+                // Delete address
+                if (dbUser.address) {
+                    await UserRepository.deleteUserAddress(dbUser.id);
+                }
+                // Delete missions created
+                if (dbUser.missionCreated.length > 0) {
+                    await UserRepository.deleteMissionCreator(dbUser.id);
+                }
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }
+
+        }).catch((error) => {
+            console.error(error);
+            throw error;
+        });
+
+        return dbUser;
+    },
     deleteUser: async (currentUserId: number) => {
         // Get user from database
         let dbUser = UserRepository.findOne({
             where: {
                 id: currentUserId
             }
-        }).then((dbUser) => {
+        }).then(async (dbUser) => {
             // check if user exist in database
             if (!dbUser){
                 throw new Api404Error(`User with id: ${currentUserId} not found.`);
             }
-            // Delete user
-            return UserRepository.delete(dbUser);
+            try {   
+                return await UserRepository.delete(dbUser);
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }
+            
         }).catch((error) => {
             console.error(error);
             throw error;
