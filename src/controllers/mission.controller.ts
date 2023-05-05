@@ -32,10 +32,11 @@ const missionController = {
         try {
             let tmp = req.body.id_create
             const id = await missionService.create(req.body);
+            // TO DO : Debug address 
             let address = await addressService.findByUserID(tmp)
-            address.id_user = null
-            address.id_mission = id
-            const tmpAdd = await addressService.create(address) 
+            address[0].id_user = null
+            address[0].id_mission = id
+            await addressService.create(address[0]) 
             res.json(id);
             return;
         } catch (error) {

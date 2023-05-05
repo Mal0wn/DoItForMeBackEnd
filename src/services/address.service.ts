@@ -51,8 +51,7 @@ const addressService = {
     },
 	create : async (address : Address) => {
         address.id = 0;
-        console.log("service " + JSON.stringify(address))
-		const tmp = await AddressRepository.save(address);
+		const tmp: any = await AddressRepository.save(address);
         return tmp.id;
 	},
     update : async (address : Address) => {
