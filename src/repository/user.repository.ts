@@ -2,6 +2,8 @@ import { format } from "path";
 import { dataSource } from "../dataSource";
 import { Message } from "../models/message.model";
 import { User } from "../models/user.model";
+import { Mission } from "../models/mission.model";
+import { Address } from "../models/address.model";
 
 //https://typeorm.io/select-query-builder
 export const UserRepository = dataSource.getRepository(User).extend({
@@ -24,4 +26,20 @@ export const UserRepository = dataSource.getRepository(User).extend({
         .andWhere("user.id != :id", {id: id})
         .getMany();
 	},
+    // delete mission with id_create = id
+    deleteMissionCreator(id: number): Promise<any> {
+        return this.createQueryBuilder("user")
+        .delete()
+        .from(Mission)
+        .where("id_create = :id", { id: id })
+        .execute();
+    },
+    // delete user address
+    deleteUserAddress(id: number): Promise<any> {
+        return this.createQueryBuilder("user")
+        .delete()
+        .from(Address)
+        .where("id_user = :id", { id: id })
+        .execute();
+    },
 });
