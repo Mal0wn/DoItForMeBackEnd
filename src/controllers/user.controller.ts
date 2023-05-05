@@ -194,20 +194,26 @@ const userController = {
      * @param req 
      * @param res 
      * @param next 
-     * @param phrase // "DELETE MY ACCOUNT" allows you to confirm the intentional deletion of the account
+     * @param phrase "DELETE MY ACCOUNT" allows you to confirm the intentional deletion of the account
      * @returns status code 200 if the user is deleted
      */
     deleteCurrentUser: async (req: Request, res: Response, next: NextFunction) => {
         try {
             // Check if token is valid
             let currentUserId = await userController.checkToken(req, res, next);
+            const user = await userService.findUserById(currentUserId);
+
             // Check if the phrase is correct
             let phrase = req.body.phrase
             if (phrase !== "DELETE MY ACCOUNT") {
                 return res.status(400).json({ message: 'Phrase is not correct' });
             }
+            
+            // Delete the user's missions and address
+            await userService.deleteUserRelationship(currentUserId);
             // Delete the user
             await userService.deleteUser(currentUserId);
+                
             // Return a success message
             return res.status(200);
         } catch (error) {
