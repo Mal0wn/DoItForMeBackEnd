@@ -9,6 +9,13 @@ export const MissionRepository = dataSource.getRepository(Mission).extend({
 			.where("mission.title = :title", {title})
 			.getMany();
 	},
+	findAllWithUser(): Promise<Mission[]> {
+		return this.createQueryBuilder('mission')
+		.leftJoinAndSelect('mission.creator', 'creator')
+		.leftJoinAndSelect('mission.maker', 'maker')
+		.getMany();
+
+	  },
 	
 	findById(id : number): Promise<Mission> {
 		return this.createQueryBuilder("mission")
@@ -52,5 +59,6 @@ export const MissionRepository = dataSource.getRepository(Mission).extend({
 		.andWhere('mission.id_make is null')
 		.andWhere("mission.title like :string", { string:`%${str}%` })
         .getMany();
-	}
+	},
+
 });
