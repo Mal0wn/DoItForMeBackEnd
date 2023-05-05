@@ -31,11 +31,11 @@ const missionController = {
 	create: async (req: Request, res: Response, next: NextFunction) => {
         try {
             let tmp = req.body.id_create
-            let address = addressService.findByUserID(tmp)
-            address.id_user = null
             const id = await missionService.create(req.body);
+            let address = await addressService.findByUserID(tmp)
+            address.id_user = null
             address.id_mission = id
-            addressService.create(address) 
+            const tmpAdd = await addressService.create(address) 
             res.json(id);
             return;
         } catch (error) {
