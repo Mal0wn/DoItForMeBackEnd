@@ -1,8 +1,16 @@
 import { Api400Error, Api404Error } from "../errors/api.error";
 import { Mission } from "../models/mission.model";
 import { MissionRepository } from "../repository/mission.repository";
+import { Address } from "../models/address.model";
 
 const missionService = {
+    findAll:async()=>{
+        return await MissionRepository.find();
+    },
+    findAllWithUser:async()=>{
+        return await MissionRepository.findAllWithUser();
+        
+    },
 	findById: async (missionId : string) => {
 		const id = parseInt(missionId);
 		if( isNaN(id)){

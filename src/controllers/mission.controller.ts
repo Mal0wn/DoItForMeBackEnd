@@ -1,12 +1,25 @@
 const missionService = require("../services/mission.service");
+const addressService = require("../services/address.service")
 import { Request, Response , NextFunction } from "express";
 import { BaseError } from "../errors/api.error";
+import addressRouter from "../routes/address.route";
 
 const missionController = {
 
 	getAll: async (req: Request, res: Response, next: NextFunction) => { 
 		try {
-			const missions = await missionService.findAllByTitle(req.params.title);
+			const missions = await missionService.findAll(req.params.title);
+			res.json(missions);
+			return;
+		} catch (error) {
+			next(error);
+			return;
+		}
+
+	},
+    getAllWithUser: async (req: Request, res: Response, next: NextFunction) => { 
+		try {
+			const missions = await missionService.findAllWithUser();
 			res.json(missions);
 			return;
 		} catch (error) {
@@ -17,7 +30,12 @@ const missionController = {
 	},
 	create: async (req: Request, res: Response, next: NextFunction) => {
         try {
+            let tmp = req.body.id_create
+            let address = addressService.findByUserID(tmp)
+            address.id_user = null
             const id = await missionService.create(req.body);
+            address.id_mission = id
+            addressService.create(address) 
             res.json(id);
             return;
         } catch (error) {
