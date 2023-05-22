@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: “Micro-service for DO4M”
   version: “1.0.0"
-  title: “ Hello MotherFuckers”
+  title: “ Swagger DO IT 4 ME ”
 
 servers:
   - url: http://localhost:3000/

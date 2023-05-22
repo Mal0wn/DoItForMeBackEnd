@@ -26,15 +26,18 @@ const missionController = {
 			next(error);
 			return;
 		}
-
 	},
 	create: async (req: Request, res: Response, next: NextFunction) => {
         try {
             let tmp = req.body.id_create
+            console.log("CREATE MISSION CONTROLLER")
+            console.log(req.body)
             const id = await missionService.create(req.body);
             // TO DO : Debug address 
-            let address = await addressService.findByUserID(tmp)
+            console.log("ID ID ID " + req.body.id_create)
+            let address = await addressService.findByID(2)
             address[0].id_user = null
+            console.log(address[0])
             address[0].id_mission = id
             await addressService.create(address[0]) 
             res.json(id);

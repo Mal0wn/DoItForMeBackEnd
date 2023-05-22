@@ -14,8 +14,7 @@ export const MissionRepository = dataSource.getRepository(Mission).extend({
 		.leftJoinAndSelect('mission.creator', 'creator')
 		.leftJoinAndSelect('mission.maker', 'maker')
 		.getMany();
-
-	  },
+	},
 	
 	findById(id : number): Promise<Mission> {
 		return this.createQueryBuilder("mission")
