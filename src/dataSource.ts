@@ -2,7 +2,7 @@ import { DataSource } from "typeorm";
 import * as dotenv from "dotenv";
 
 require("dotenv").config({ path: ".env" })
-dotenv.config({ path: "./.env" });
+dotenv.config({ path: process.env.NODE_ENV === 'prod' ? './prod.env' : './dev.env' });
 
 export const dataSource = new DataSource({
     type: "mysql",
@@ -15,3 +15,4 @@ export const dataSource = new DataSource({
     logging: true,
     synchronize: true
   });
+

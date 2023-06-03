@@ -2,7 +2,8 @@
 /dist
 /build
 package-lock.json
-.env
+prod.env
+dev.env
 /data/testData.sql
 node_modules/
 npm-debug.log

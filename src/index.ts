@@ -9,7 +9,7 @@ import missionRouter from './routes/mission.route';
 import authenticationRouter from './routes/authentication.route';
 import { securityJWTMiddleware } from './middleware/token.middleware';
 import { errorMiddleware } from './middleware/error.middleware';
-import * as path from "path";
+import * as dotenv from "dotenv";
 import { wsMiddleware } from './middleware/ws.middleware';
 import messageRouter from './routes/message.route';
 import addressRouter from './routes/address.route';
@@ -48,6 +48,9 @@ app.use(errorMiddleware);
 app.ws(`/ws`, wsMiddleware);
 
 //Port App Management
+
+require("dotenv").config({ path: ".env" })
+dotenv.config({ path: process.env.NODE_ENV === 'prod' ? './prod.env' : './dev.env' });
 const PORT = process.env.APP_PORT || 8000;
 const server = app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
