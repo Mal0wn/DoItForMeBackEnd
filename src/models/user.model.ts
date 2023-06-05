@@ -32,13 +32,13 @@ export class User {
     @Column()
     phone: number;
 
-    @OneToMany(() => Mission, (mission) => mission.creator)
+    @OneToMany(() => Mission, (mission) => mission.creator, {cascade: true, onDelete: "CASCADE"})
     missionCreated: Mission[];
 
     @OneToMany(() => Mission, (mission) => mission.maker)
     missionMade: Mission[];
 
-    @OneToMany(() => Address, (address) => address.user)
+    @OneToMany(() => Address, (address) => address.user, {cascade: true, onDelete: "CASCADE"})
     address: Address[];
 
     @OneToMany(() => Message, (message) => message.receiver)

@@ -32,7 +32,7 @@ export class Mission {
 	@Column({ nullable: true })
     id_make: number;
 
-    @ManyToOne(() => User, (user) => user.missionCreated)
+    @ManyToOne(() => User, (user) => user.missionCreated, {onDelete: "CASCADE"})
     @JoinColumn({ name: "id_create" })
     creator: User;
 

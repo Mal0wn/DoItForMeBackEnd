@@ -5,6 +5,8 @@ import { UserRepository } from "../repository/user.repository";
 import bcrypt from "bcrypt";
 import { Address } from "../models/address.model";
 import { AddressRepository } from "../repository/address.repository";
+import { MissionRepository } from "../repository/mission.repository";
+import { log } from "console";
 
 // https://typeorm.io/find-options
 const userService = {
@@ -93,7 +95,11 @@ const userService = {
                 id: userId
             },
             relations: {
-                address: true
+                address: true,
+                missionCreated: true,
+                missionMade: true,
+                received: true,
+                sent: true
             }
         });
     },
@@ -172,29 +178,15 @@ const userService = {
             dbUser.birthday = user.birthday;
             dbUser.phone = user.phone;
             
-            // If user has no address, create one and save it else update it
-            if (dbUser.address.length === 0) {
-                const address = new Address();
-                address.number = user.address[0].number;
-                address.street = user.address[0].street;
-                address.zip_code = user.address[0].zip_code;
-                address.city = user.address[0].city;
-                address.country = user.address[0].country;
-                address.complement = user.address[0].complement;
-                address.id_user = user.id;
-                dbUser.address = [address];
+            // Update address                
+            dbUser.address[0].number = user.address[0].number;
+            dbUser.address[0].street = user.address[0].street;
+            dbUser.address[0].zip_code = user.address[0].zip_code;
+            dbUser.address[0].city = user.address[0].city;
+            dbUser.address[0].country = user.address[0].country;
+            dbUser.address[0].complement = user.address[0].complement;
 
-                AddressRepository.save(dbUser.address);
-            } else {                
-                dbUser.address[0].number = user.address[0].number;
-                dbUser.address[0].street = user.address[0].street;
-                dbUser.address[0].zip_code = user.address[0].zip_code;
-                dbUser.address[0].city = user.address[0].city;
-                dbUser.address[0].country = user.address[0].country;
-                dbUser.address[0].complement = user.address[0].complement;
-
-                AddressRepository.save(dbUser.address[0]);
-            }
+            AddressRepository.save(dbUser.address[0]);
             
             // Save user in database
             return UserRepository.save(dbUser);
@@ -239,13 +231,18 @@ const userService = {
             where: {
                 id: currentUserId
             }
-        }).then((dbUser) => {
+        }).then(async (dbUser) => {
             // check if user exist in database
             if (!dbUser){
                 throw new Api404Error(`User with id: ${currentUserId} not found.`);
             }
-            // Delete user
-            return UserRepository.delete(dbUser);
+            try {   
+                return await UserRepository.delete(dbUser);
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }
+            
         }).catch((error) => {
             console.error(error);
             throw error;

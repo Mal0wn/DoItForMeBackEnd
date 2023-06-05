@@ -2,6 +2,8 @@ import { format } from "path";
 import { dataSource } from "../dataSource";
 import { Message } from "../models/message.model";
 import { User } from "../models/user.model";
+import { Mission } from "../models/mission.model";
+import { Address } from "../models/address.model";
 
 //https://typeorm.io/select-query-builder
 export const UserRepository = dataSource.getRepository(User).extend({

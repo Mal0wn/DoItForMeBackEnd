@@ -147,7 +147,7 @@ const userController = {
 
             // Check if the user id in the token is the same as the user id in the request body
             const user = await userService.findUserById(currentUserId);
-            if (req.body.id !== user.id) {
+            if (req.body.id !== user.id || req.body.id !== null || req.body.id !== undefined) {
                 return res.status(401).json({ message: 'Unauthorized' });
             }
             
@@ -194,13 +194,16 @@ const userController = {
      * @param req 
      * @param res 
      * @param next 
-     * @param phrase // "DELETE MY ACCOUNT" allows you to confirm the intentional deletion of the account
+     * @param phrase "DELETE MY ACCOUNT" allows you to confirm the intentional deletion of the account
      * @returns status code 200 if the user is deleted
      */
     deleteCurrentUser: async (req: Request, res: Response, next: NextFunction) => {
         try {
+            
             // Check if token is valid
             let currentUserId = await userController.checkToken(req, res, next);
+            const user = await userService.findUserById(currentUserId);
+
             // Check if the phrase is correct
             let phrase = req.body.phrase
             if (phrase !== "DELETE MY ACCOUNT") {
@@ -208,9 +211,10 @@ const userController = {
             }
             // Delete the user
             await userService.deleteUser(currentUserId);
+                
             // Return a success message
-            return res.status(200);
-        } catch (error) {
+            return res.status(204);
+        } catch (error) {            
             next(error);
             return;
         }
