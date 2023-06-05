@@ -147,7 +147,7 @@ const userController = {
 
             // Check if the user id in the token is the same as the user id in the request body
             const user = await userService.findUserById(currentUserId);
-            if (req.body.id !== user.id) {
+            if (req.body.id !== user.id || req.body.id !== null || req.body.id !== undefined) {
                 return res.status(401).json({ message: 'Unauthorized' });
             }
             
@@ -199,6 +199,7 @@ const userController = {
      */
     deleteCurrentUser: async (req: Request, res: Response, next: NextFunction) => {
         try {
+            
             // Check if token is valid
             let currentUserId = await userController.checkToken(req, res, next);
             const user = await userService.findUserById(currentUserId);
@@ -208,15 +209,12 @@ const userController = {
             if (phrase !== "DELETE MY ACCOUNT") {
                 return res.status(400).json({ message: 'Phrase is not correct' });
             }
-            
-            // Delete the user's missions and address
-            await userService.deleteUserRelationship(currentUserId);
             // Delete the user
             await userService.deleteUser(currentUserId);
                 
             // Return a success message
-            return res.status(200);
-        } catch (error) {
+            return res.status(204);
+        } catch (error) {            
             next(error);
             return;
         }
