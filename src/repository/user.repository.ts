@@ -26,20 +26,4 @@ export const UserRepository = dataSource.getRepository(User).extend({
         .andWhere("user.id != :id", {id: id})
         .getMany();
 	},
-    // delete mission with id_create = id
-    deleteMissionCreator(id: number): Promise<any> {
-        return this.createQueryBuilder("user")
-        .delete()
-        .from(Mission)
-        .where("id_create = :id", { id: id })
-        .execute();
-    },
-    // delete user address
-    deleteUserAddress(id: number): Promise<any> {
-        return this.createQueryBuilder("user")
-        .delete()
-        .from(Address)
-        .where("id_user = :id", { id: id })
-        .execute();
-    },
 });
