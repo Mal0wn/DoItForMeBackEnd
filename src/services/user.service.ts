@@ -225,49 +225,6 @@ const userService = {
 
         return dbUser;
     },
-    deleteUserRelationship: async (currentUserId: number) => {
-        // Get user from database
-        let dbUser = UserRepository.findOne({
-            where: {
-                id: currentUserId
-            },
-            relations: {
-                missionCreated: true,
-                missionMade: true,
-                received: true,
-                sent: true,
-                address: true
-            }
-        }).then(async (dbUser) => {
-            // check if user exist in database
-            if (!dbUser){
-                throw new Api404Error(`User with id: ${currentUserId} not found.`);
-            }
-            try {
-                // Can't delete user if he has mission in progress
-                if (dbUser.missionMade.length > 0) {
-                    throw new Api400Error(`User has mission in progress.`);
-                }
-                // Delete address
-                if (dbUser.address) {
-                    await UserRepository.deleteUserAddress(dbUser.id);
-                }
-                // Delete missions created
-                if (dbUser.missionCreated.length > 0) {
-                    await UserRepository.deleteMissionCreator(dbUser.id);
-                }
-            } catch (error) {
-                console.error(error);
-                throw error;
-            }
-
-        }).catch((error) => {
-            console.error(error);
-            throw error;
-        });
-
-        return dbUser;
-    },
     deleteUser: async (currentUserId: number) => {
         // Get user from database
         let dbUser = UserRepository.findOne({
